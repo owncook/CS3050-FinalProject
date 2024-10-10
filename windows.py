@@ -5,8 +5,6 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Galaga Game Window"
 
-
-
 class InstructionView(arcade.View):
     """ View to show instructions """
 
