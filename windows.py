@@ -119,7 +119,7 @@ class GameView(arcade.View):
 
         # Sounds
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
-
+        self.hit_sound = arcade.load_sound("sources/sounds/wilhelm.wav")
 
         # Don't show the mouse cursor
         self.window.set_mouse_visible(False)
@@ -138,7 +138,7 @@ class GameView(arcade.View):
         self.score = 0
 
         # Enemies (testing for now)
-        self.test_enemy = arcade.Sprite("sources/json.jpeg", scale=1)
+        self.test_enemy = arcade.Sprite("sources/enemies/json.jpeg", scale=1)
         self.test_enemy.center_x = SCREEN_WIDTH // 2
         self.test_enemy.center_y = SCREEN_HEIGHT // 2
         self.enemy_list.append(self.test_enemy)
@@ -193,6 +193,21 @@ class GameView(arcade.View):
         self.player_sprite.update()
         self.bullet_list.update()
 
+        for bullet in self.bullet_list:
+
+            enemies_hit = arcade.check_for_collision_with_list(bullet, self.enemy_list)
+
+            if (len(enemies_hit) > 0):
+                bullet.remove_from_sprite_lists()
+
+            for enemy in enemies_hit:
+                enemy.remove_from_sprite_lists()
+                self.score += 1
+
+                arcade.play_sound(self.hit_sound)
+
+            if bullet.bottom > SCREEN_HEIGHT:
+                    bullet.remove_from_sprite_lists()
 
 
 def main():
