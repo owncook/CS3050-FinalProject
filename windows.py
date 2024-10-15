@@ -4,6 +4,7 @@ import arcade
 # --- Constants ---
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+BULLET_SPEED = 5
 SCREEN_TITLE = "Galaga Game Window"
 
 
@@ -115,13 +116,17 @@ class GameView(arcade.View):
         self.bullet_list = None
         self.score = 0
 
+        # Sounds
+        self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
+
+
         # Don't show the mouse cursor
         self.window.set_mouse_visible(False)
 
     def setup(self):
         """Set up the game variables and objects"""
         # Initialize player sprite and sprite lists
-        self.player_sprite = arcade.Sprite("player.png", scale=0.5)
+        self.player_sprite = arcade.Sprite("sources/player.png", scale=5)
         self.player_sprite.center_x = SCREEN_WIDTH // 2
         self.player_sprite.center_y = 50
         
@@ -145,12 +150,6 @@ class GameView(arcade.View):
         output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
-    def on_update(self, delta_time):
-        """Update game logic"""
-        # Update player, enemies, bullets
-        self.player_sprite.update()
-        self.bullet_list.update()
-
     def on_key_press(self, key, modifiers):
         """Handle key press events"""
         if key == arcade.key.LEFT:
@@ -161,11 +160,32 @@ class GameView(arcade.View):
             # pass self, the current view, to preserve this view's state
             pause = PauseView(self)
             self.window.show_view(pause)
+        elif key == arcade.key.SPACE:
+            arcade.play_sound(self.gun_sound)
+            bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=1)
+
+            bullet.angle = 90
+
+            bullet.change_y = BULLET_SPEED
+
+            bullet.center_x = self.player_sprite.center_x
+            bullet.bottom = self.player_sprite.top
+
+            self.bullet_list.append(bullet)
+
 
     def on_key_release(self, key, modifiers):
         """Handle key release events"""
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
+
+    def on_update(self, delta_time):
+        """Update game logic"""
+        # Update player, enemies, bullets
+        self.player_sprite.update()
+        self.bullet_list.update()
+
+
 
 def main():
     """ Main function """
