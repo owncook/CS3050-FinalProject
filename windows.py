@@ -4,7 +4,7 @@ import arcade
 # --- Constants ---
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-BULLET_SPEED = 5
+BULLET_SPEED = 10
 SCREEN_TITLE = "Galaga Game Window"
 
 
