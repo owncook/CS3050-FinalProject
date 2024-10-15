@@ -112,6 +112,7 @@ class GameView(arcade.View):
         
         # Initialize variables for the player, enemies, bullets, etc.
         self.player_sprite = None
+        self.test_enemy = None
         self.enemy_list = None
         self.bullet_list = None
         self.score = 0
@@ -135,6 +136,13 @@ class GameView(arcade.View):
         self.bullet_list = arcade.SpriteList()
         # Score
         self.score = 0
+
+        # Enemies (testing for now)
+        self.test_enemy = arcade.Sprite("sources/json.jpeg", scale=1)
+        self.test_enemy.center_x = SCREEN_WIDTH // 2
+        self.test_enemy.center_y = SCREEN_HEIGHT // 2
+        self.enemy_list.append(self.test_enemy)
+
 
     def on_draw(self):
         """Render the screen"""
