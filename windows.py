@@ -4,9 +4,9 @@ import arcade
 # --- Constants ---
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+PLAYER_SCALE = .075
 BULLET_SPEED = 10
 SCREEN_TITLE = "Galaga Game Window"
-
 
 
 class InstructionView(arcade.View):
@@ -127,7 +127,7 @@ class GameView(arcade.View):
     def setup(self):
         """Set up the game variables and objects"""
         # Initialize player sprite and sprite lists
-        self.player_sprite = arcade.Sprite("sources/player.png", scale=5)
+        self.player_sprite = arcade.Sprite("sources/player.png", scale=PLAYER_SCALE)
         self.player_sprite.center_x = SCREEN_WIDTH // 2
         self.player_sprite.center_y = 50
         
