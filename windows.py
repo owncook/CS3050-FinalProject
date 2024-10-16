@@ -1,5 +1,6 @@
 import random
 import arcade
+import math
 
 # --- Constants ---
 SCREEN_WIDTH = 800
@@ -7,24 +8,83 @@ SCREEN_HEIGHT = 600
 PLAYER_SCALE = .075
 BULLET_SPEED = 10
 SCREEN_TITLE = "Galaga Game Window"
+ENEMY_SPAWN_INTERVAL = 3
 
 
-class InstructionView(arcade.View):
-    """ View to show instructions """
+class SwoopingEnemy(arcade.Sprite):
+    """Enemy class to populate the enemies in a swooping motion every two seconds for now. Will potentially update as we count time game has gone on for/to make grid more rigid instead of random."""
+    def __init__(self, image, scale, target_x, target_y):
+        super().__init__(image, scale)
+        self.start_x = random.randint(0, SCREEN_WIDTH)
+        self.start_y = SCREEN_HEIGHT
+        self.center_x = self.start_x
+        self.center_y = self.start_y
+        self.target_x = target_x
+        self.target_y = target_y
+        self.swoop_timer = 0  # Timer for loop swoop motion
+
+    def update(self):
+        """Update the enemy's movement."""
+        # Swoop the enemy into position over the course of two seconds
+        if self.swoop_timer < 2.0:
+            # Achieve curved movement using sine calculation
+            angle = self.swoop_timer * math.pi * 1 # Full circle over 1 second
+            radius = 300  # Radius of the loop
+            self.center_x = self.start_x + math.sin(angle) * radius
+            self.center_y = self.start_y - (self.swoop_timer * 100)  # Move downward gradually
+        else:
+            # After swooping, move the enemy to the target position
+            if self.center_y > self.target_y:
+                self.center_y -= 2  # Move downward
+
+        # Increment the swoop timer
+        self.swoop_timer += 1 / 60  # Update timer based on 60 fps
+
+class StartView(arcade.View):
+    """ View that is initially loaded """
 
     def on_show_view(self):
         """ This is run once when we switch to this view """
-        arcade.set_background_color(arcade.csscolor.DARK_SLATE_BLUE)
+        arcade.set_background_color(arcade.csscolor.BLACK)
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
 
+        # Depending on galaga versions, the start screen has space art ie: planets/stars. 
+        # I am adding stars to ours via a list of random coordinates.
+        self.star_list = []
+        # Generate star positions
+        for _ in range(50): # Adjust the passed range to change the amount of stars
+            x = random.randint(0, SCREEN_WIDTH)
+            y = random.randint(0, SCREEN_HEIGHT)
+            self.star_list.append((x, y))
+
     def on_draw(self):
         """ Draw this view """
         self.clear()
-        arcade.draw_text("Instructions Screen", self.window.width / 2, self.window.height / 2,
-                         arcade.color.WHITE, font_size=50, anchor_x="center")
+        # Draw stars
+        for star in self.star_list:
+            x, y = star
+            arcade.draw_circle_filled(x, y, 2, arcade.color.WHITE)
+    
+        # Setting variables used in the drawing of start screen
+        text = "GALAGA"
+        text_x = SCREEN_WIDTH // 2
+        text_y = SCREEN_HEIGHT // 1.75
+        outline_color = arcade.color.RED
+        fill_color = arcade.color.GREEN
+
+        # To create an outline effect, draw GALAGA slightly offset in all 4 directions in red
+        arcade.draw_text(text, text_x - 2, text_y - 2, outline_color, font_size=50, anchor_x="center", anchor_y="center")
+        arcade.draw_text(text, text_x + 2, text_y - 2, outline_color, font_size=50, anchor_x="center", anchor_y="center")
+        arcade.draw_text(text, text_x - 2, text_y + 2, outline_color, font_size=50, anchor_x="center", anchor_y="center")
+        arcade.draw_text(text, text_x + 2, text_y + 2, outline_color, font_size=50, anchor_x="center", anchor_y="center")
+
+        # Draw the main text on top in green
+        arcade.draw_text(text, text_x, text_y, fill_color, font_size=50, anchor_x="center", anchor_y="center")
+
+        #Advance to game instruction
         arcade.draw_text("Click to advance", self.window.width / 2, self.window.height / 2-75,
                          arcade.color.WHITE, font_size=20, anchor_x="center")
 
@@ -33,6 +93,7 @@ class InstructionView(arcade.View):
         game_view = GameView()
         game_view.setup()
         self.window.show_view(game_view)
+
 class PauseView(arcade.View):
     def __init__(self, game_view):
         super().__init__()
@@ -116,6 +177,7 @@ class GameView(arcade.View):
         self.enemy_list = None
         self.bullet_list = None
         self.score = 0
+        self.time_elapsed = 0  # Track time for enemy spawning
 
         # Sounds
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
@@ -142,6 +204,17 @@ class GameView(arcade.View):
         self.test_enemy.center_x = SCREEN_WIDTH // 2
         self.test_enemy.center_y = SCREEN_HEIGHT // 2
         self.enemy_list.append(self.test_enemy)
+        self.time_elapsed = 0
+
+        self.spawn_enemy()  # Initial enemy spawn
+
+
+    def spawn_enemy(self):
+        """Spawn an enemy that performs a loop swoop before settling into position."""
+        target_x = random.randint(50, SCREEN_WIDTH - 50)
+        target_y = random.randint(SCREEN_HEIGHT // 2, SCREEN_HEIGHT - 100)
+        enemy = SwoopingEnemy("sources/enemies/json.jpeg", scale=1, target_x=target_x, target_y=target_y)
+        self.enemy_list.append(enemy)
 
 
     def on_draw(self):
@@ -192,6 +265,23 @@ class GameView(arcade.View):
         # Update player, enemies, bullets
         self.player_sprite.update()
         self.bullet_list.update()
+        self.enemy_list.update()
+
+        # Keep the player on the screen
+        if self.player_sprite.left < 0:
+            self.player_sprite.left = 0
+        elif self.player_sprite.right > SCREEN_WIDTH:
+            self.player_sprite.right = SCREEN_WIDTH
+
+        # Increment the time elapsed
+        self.time_elapsed += delta_time
+
+        # Check if 10 seconds have passed
+        if self.time_elapsed >= ENEMY_SPAWN_INTERVAL:
+            # Spawn a new enemy
+            self.spawn_enemy()
+            # Reset the timer
+            self.time_elapsed = 0
 
         for bullet in self.bullet_list:
 
@@ -214,7 +304,7 @@ def main():
     """ Main function """
 
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    start_view = InstructionView()
+    start_view = StartView()
     window.show_view(start_view)
     arcade.run()
 
