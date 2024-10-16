@@ -51,7 +51,8 @@ class StartView(arcade.View):
         # to reset the viewport back to the start so we can see what we draw.
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
 
-        # Using a star list
+        # Depending on galaga versions, the start screen has space art ie: planets/stars. 
+        # I am adding stars to ours via a list of random coordinates.
         self.star_list = []
         # Generate star positions
         for _ in range(50): # Adjust the passed range to change the amount of stars
@@ -66,12 +67,26 @@ class StartView(arcade.View):
         for star in self.star_list:
             x, y = star
             arcade.draw_circle_filled(x, y, 2, arcade.color.WHITE)
-            
-        arcade.draw_text("GALAGA", self.window.width / 2, self.window.height / 2,
-                         arcade.color.WHITE, font_size=50, anchor_x="center")
+    
+        # Setting variables used in the drawing of start screen
+        text = "GALAGA"
+        text_x = SCREEN_WIDTH // 2
+        text_y = SCREEN_HEIGHT // 1.75
+        outline_color = arcade.color.RED
+        fill_color = arcade.color.GREEN
+
+        # To create an outline effect, draw GALAGA slightly offset in all 4 directions in red
+        arcade.draw_text(text, text_x - 2, text_y - 2, outline_color, font_size=50, anchor_x="center", anchor_y="center")
+        arcade.draw_text(text, text_x + 2, text_y - 2, outline_color, font_size=50, anchor_x="center", anchor_y="center")
+        arcade.draw_text(text, text_x - 2, text_y + 2, outline_color, font_size=50, anchor_x="center", anchor_y="center")
+        arcade.draw_text(text, text_x + 2, text_y + 2, outline_color, font_size=50, anchor_x="center", anchor_y="center")
+
+        # Draw the main text on top in green
+        arcade.draw_text(text, text_x, text_y, fill_color, font_size=50, anchor_x="center", anchor_y="center")
+
+        #Advance to game instruction
         arcade.draw_text("Click to advance", self.window.width / 2, self.window.height / 2-75,
                          arcade.color.WHITE, font_size=20, anchor_x="center")
-        
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ If the user presses the mouse button, start the game. """
