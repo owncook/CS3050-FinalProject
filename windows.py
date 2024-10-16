@@ -1,5 +1,6 @@
 import random
 import arcade
+import math
 
 # --- Constants ---
 SCREEN_WIDTH = 800
@@ -7,7 +8,37 @@ SCREEN_HEIGHT = 600
 PLAYER_SCALE = .075
 BULLET_SPEED = 10
 SCREEN_TITLE = "Galaga Game Window"
+ENEMY_SPAWN_INTERVAL = 3
 
+
+class SwoopingEnemy(arcade.Sprite):
+    """Enemy class to populate the enemies in a swooping motion every two seconds for now. Will potentially update as we count time game has gone on for/to make grid more rigid instead of random."""
+    def __init__(self, image, scale, target_x, target_y):
+        super().__init__(image, scale)
+        self.start_x = random.randint(0, SCREEN_WIDTH)
+        self.start_y = SCREEN_HEIGHT
+        self.center_x = self.start_x
+        self.center_y = self.start_y
+        self.target_x = target_x
+        self.target_y = target_y
+        self.swoop_timer = 0  # Timer for loop swoop motion
+
+    def update(self):
+        """Update the enemy's movement."""
+        # Swoop the enemy into position over the course of two seconds
+        if self.swoop_timer < 2.0:
+            # Achieve curved movement using sine calculation
+            angle = self.swoop_timer * math.pi * 1 # Full circle over 1 second
+            radius = 300  # Radius of the loop
+            self.center_x = self.start_x + math.sin(angle) * radius
+            self.center_y = self.start_y - (self.swoop_timer * 100)  # Move downward gradually
+        else:
+            # After swooping, move the enemy to the target position
+            if self.center_y > self.target_y:
+                self.center_y -= 2  # Move downward
+
+        # Increment the swoop timer
+        self.swoop_timer += 1 / 60  # Update timer based on 60 fps
 
 class InstructionView(arcade.View):
     """ View to show instructions """
@@ -116,6 +147,7 @@ class GameView(arcade.View):
         self.enemy_list = None
         self.bullet_list = None
         self.score = 0
+        self.time_elapsed = 0  # Track time for enemy spawning
 
         # Sounds
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
@@ -142,6 +174,17 @@ class GameView(arcade.View):
         self.test_enemy.center_x = SCREEN_WIDTH // 2
         self.test_enemy.center_y = SCREEN_HEIGHT // 2
         self.enemy_list.append(self.test_enemy)
+        self.time_elapsed = 0
+
+        self.spawn_enemy()  # Initial enemy spawn
+
+
+    def spawn_enemy(self):
+        """Spawn an enemy that performs a loop swoop before settling into position."""
+        target_x = random.randint(50, SCREEN_WIDTH - 50)
+        target_y = random.randint(SCREEN_HEIGHT // 2, SCREEN_HEIGHT - 100)
+        enemy = SwoopingEnemy("sources/enemies/json.jpeg", scale=1, target_x=target_x, target_y=target_y)
+        self.enemy_list.append(enemy)
 
 
     def on_draw(self):
@@ -192,6 +235,23 @@ class GameView(arcade.View):
         # Update player, enemies, bullets
         self.player_sprite.update()
         self.bullet_list.update()
+        self.enemy_list.update()
+
+        # Keep the player on the screen
+        if self.player_sprite.left < 0:
+            self.player_sprite.left = 0
+        elif self.player_sprite.right > SCREEN_WIDTH:
+            self.player_sprite.right = SCREEN_WIDTH
+
+        # Increment the time elapsed
+        self.time_elapsed += delta_time
+
+        # Check if 10 seconds have passed
+        if self.time_elapsed >= ENEMY_SPAWN_INTERVAL:
+            # Spawn a new enemy
+            self.spawn_enemy()
+            # Reset the timer
+            self.time_elapsed = 0
 
         for bullet in self.bullet_list:
 
