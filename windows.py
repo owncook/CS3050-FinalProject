@@ -40,30 +40,45 @@ class SwoopingEnemy(arcade.Sprite):
         # Increment the swoop timer
         self.swoop_timer += 1 / 60  # Update timer based on 60 fps
 
-class InstructionView(arcade.View):
-    """ View to show instructions """
+class StartView(arcade.View):
+    """ View that is initially loaded """
 
     def on_show_view(self):
         """ This is run once when we switch to this view """
-        arcade.set_background_color(arcade.csscolor.DARK_SLATE_BLUE)
+        arcade.set_background_color(arcade.csscolor.BLACK)
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
 
+        # Using a star list
+        self.star_list = []
+        # Generate star positions
+        for _ in range(50): # Adjust the passed range to change the amount of stars
+            x = random.randint(0, SCREEN_WIDTH)
+            y = random.randint(0, SCREEN_HEIGHT)
+            self.star_list.append((x, y))
+
     def on_draw(self):
         """ Draw this view """
         self.clear()
-        arcade.draw_text("Instructions Screen", self.window.width / 2, self.window.height / 2,
+        # Draw stars
+        for star in self.star_list:
+            x, y = star
+            arcade.draw_circle_filled(x, y, 2, arcade.color.WHITE)
+            
+        arcade.draw_text("GALAGA", self.window.width / 2, self.window.height / 2,
                          arcade.color.WHITE, font_size=50, anchor_x="center")
         arcade.draw_text("Click to advance", self.window.width / 2, self.window.height / 2-75,
                          arcade.color.WHITE, font_size=20, anchor_x="center")
+        
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ If the user presses the mouse button, start the game. """
         game_view = GameView()
         game_view.setup()
         self.window.show_view(game_view)
+
 class PauseView(arcade.View):
     def __init__(self, game_view):
         super().__init__()
@@ -274,7 +289,7 @@ def main():
     """ Main function """
 
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    start_view = InstructionView()
+    start_view = StartView()
     window.show_view(start_view)
     arcade.run()
 
