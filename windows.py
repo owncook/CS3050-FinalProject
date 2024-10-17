@@ -2,6 +2,8 @@ import random
 import arcade
 import math
 
+import arcade.key
+
 # --- Constants ---
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -178,6 +180,8 @@ class GameView(arcade.View):
         self.bullet_list = None
         self.score = 0
         self.time_elapsed = 0  # Track time for enemy spawning
+        self.pressed_keys = set() # List to track movement keys pressed
+
 
         # Sounds
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
@@ -186,6 +190,7 @@ class GameView(arcade.View):
         # Don't show the mouse cursor
         self.window.set_mouse_visible(False)
 
+        
     def setup(self):
         """Set up the game variables and objects"""
         # Initialize player sprite and sprite lists
@@ -234,8 +239,10 @@ class GameView(arcade.View):
     def on_key_press(self, key, modifiers):
         """Handle key press events"""
         if key == arcade.key.LEFT:
+            self.pressed_keys.add(arcade.key.LEFT)
             self.player_sprite.change_x = -5
         elif key == arcade.key.RIGHT:
+            self.pressed_keys.add(arcade.key.RIGHT)
             self.player_sprite.change_x = 5
         elif key == arcade.key.ESCAPE:
             # pass self, the current view, to preserve this view's state
@@ -257,8 +264,20 @@ class GameView(arcade.View):
 
     def on_key_release(self, key, modifiers):
         """Handle key release events"""
-        if key == arcade.key.LEFT or key == arcade.key.RIGHT:
-            self.player_sprite.change_x = 0
+        if key == arcade.key.LEFT:
+            self.pressed_keys.discard(arcade.key.LEFT)
+            # Check if RIGHT is still pressed
+            if arcade.key.RIGHT in self.pressed_keys:
+                self.player_sprite.change_x = 5
+            else:
+                self.player_sprite.change_x = 0
+        elif key == arcade.key.RIGHT:
+            self.pressed_keys.discard(arcade.key.RIGHT)
+            # Check if LEFT is still pressed
+            if arcade.key.LEFT in self.pressed_keys:
+                self.player_sprite.change_x = -5
+            else:
+                self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):
         """Update game logic"""
