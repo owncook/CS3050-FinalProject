@@ -20,7 +20,7 @@ class SwoopingEnemy(arcade.Sprite):
         self.start_x = random.randint(0, SCREEN_WIDTH)
         self.start_y = SCREEN_HEIGHT
         self.center_x = self.start_x
-        self.center_y = self.start_y
+        self.center_y = self.start_y 
         self.target_x = target_x
         self.target_y = target_y
         self.swoop_timer = 0  # Timer for loop swoop motion
