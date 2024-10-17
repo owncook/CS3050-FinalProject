@@ -9,6 +9,8 @@ PLAYER_SCALE = .075
 BULLET_SPEED = 10
 SCREEN_TITLE = "Galaga Game Window"
 ENEMY_SPAWN_INTERVAL = 3
+STAR_COUNT = 100
+STAR_SPEED = 2
 
 
 class SwoopingEnemy(arcade.Sprite):
@@ -39,6 +41,27 @@ class SwoopingEnemy(arcade.Sprite):
 
         # Increment the swoop timer
         self.swoop_timer += 1 / 60  # Update timer based on 60 fps
+
+# Creating star class for background
+class Star():
+    def __init__(self):
+        # Randomly initialize the position and size of the star
+        self.x = random.uniform(0, SCREEN_WIDTH)
+        self.y = random.uniform(0, SCREEN_HEIGHT)
+        self.size = random.uniform(1, 3)
+        self.speed = random.uniform(1, STAR_SPEED)
+
+    def update(self):
+        # Move the star downward
+        self.y -= self.speed
+        # If the star moves off the screen, reset it to the top
+        if self.y < 0:
+            self.y = SCREEN_HEIGHT
+            self.x = random.uniform(0, SCREEN_WIDTH)
+    def draw(self):
+        # Draw the star as a simple circle
+        arcade.draw_circle_filled(self.x, self.y, self.size, arcade.color.WHITE)
+
 
 class StartView(arcade.View):
     """ View that is initially loaded """
@@ -170,6 +193,8 @@ class GameView(arcade.View):
         
         # Set background color
         arcade.set_background_color(arcade.color.BLACK)
+        # Set up star positions
+        self.star_list = []
         
         # Initialize variables for the player, enemies, bullets, etc.
         self.player_sprite = None
@@ -208,6 +233,11 @@ class GameView(arcade.View):
 
         self.spawn_enemy()  # Initial enemy spawn
 
+        # Setup stars
+        for _ in range(STAR_COUNT):
+            star = Star()
+            self.star_list.append(star)
+
 
     def spawn_enemy(self):
         """Spawn an enemy that performs a loop swoop before settling into position."""
@@ -220,7 +250,9 @@ class GameView(arcade.View):
     def on_draw(self):
         """Render the screen"""
         arcade.start_render()
-        
+        # Draw stars on background
+        for star in self.star_list:
+            star.draw()
         # Draw the player
         self.player_sprite.draw()
         
@@ -276,6 +308,10 @@ class GameView(arcade.View):
         # Increment the time elapsed
         self.time_elapsed += delta_time
 
+        # Update stars to appear as scrolling
+        for star in self.star_list:
+            star.update()
+
         # Check if 10 seconds have passed
         if self.time_elapsed >= ENEMY_SPAWN_INTERVAL:
             # Spawn a new enemy
@@ -298,6 +334,7 @@ class GameView(arcade.View):
 
             if bullet.bottom > SCREEN_HEIGHT:
                     bullet.remove_from_sprite_lists()
+
 
 
 def main():
