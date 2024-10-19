@@ -5,8 +5,8 @@ import math
 import arcade.key
 
 # --- Constants ---
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 600
+SCREEN_HEIGHT = 800
 PLAYER_SCALE = .075
 BULLET_SPEED = 10
 SCREEN_TITLE = "Galaga Game Window"
@@ -17,30 +17,44 @@ class SwoopingEnemy(arcade.Sprite):
     """Enemy class to populate the enemies in a swooping motion every two seconds for now. Will potentially update as we count time game has gone on for/to make grid more rigid instead of random."""
     def __init__(self, image, scale, target_x, target_y):
         super().__init__(image, scale)
+        # set where on the screen the enemies will spawn from
         self.start_x = random.randint(0, SCREEN_WIDTH)
         self.start_y = SCREEN_HEIGHT
+
+        # set the center of the curve that the enemies will swoop around 
         self.center_x = self.start_x
         self.center_y = self.start_y
+
+        # set the final position that they enemy will settle into after the swoop 
         self.target_x = target_x
         self.target_y = target_y
-        self.swoop_timer = 0  # Timer for loop swoop motion
+
+        # initialize a timer for the enemy swoop motion
+        self.swoop_timer = 0  
 
     def update(self):
         """Update the enemy's movement."""
-        # Swoop the enemy into position over the course of two seconds
+        # swoop the enemy into position over the course of two seconds
         if self.swoop_timer < 2.0:
-            # Achieve curved movement using sine calculation
-            angle = self.swoop_timer * math.pi * 1 # Full circle over 1 second
-            radius = 300  # Radius of the loop
-            self.center_x = self.start_x + math.sin(angle) * radius
-            self.center_y = self.start_y - (self.swoop_timer * 100)  # Move downward gradually
-        else:
-            # After swooping, move the enemy to the target position
-            if self.center_y > self.target_y:
-                self.center_y -= 2  # Move downward
+            # achieve curved movement using sine calculation
 
-        # Increment the swoop timer
-        self.swoop_timer += 1 / 60  # Update timer based on 60 fps
+            # the angle of the swoop over one second
+            swoop_angle = self.swoop_timer * math.pi * 1 # full circle over 1 second
+
+            # the radius of the swoop 
+            radius = 300  
+
+            # calculate new x, y for the enemy as it swoops 
+            self.center_x = self.start_x + math.sin(swoop_angle) * radius
+            self.center_y = self.start_y - (self.swoop_timer * 100)  
+
+        else:
+            # after swooping, move the enemy to the target position if the new y-coordinate is greater than the target y-coordinate 
+            if self.center_y > self.target_y:
+                self.center_y -= 2  # move downward
+
+        # increment the swoop timer
+        self.swoop_timer += 1 / 60  # update timer based on 60 fps
 
 class StartView(arcade.View):
     """ View that is initially loaded """
@@ -203,6 +217,7 @@ class GameView(arcade.View):
         self.bullet_list = arcade.SpriteList()
         # Score
         self.score = 0
+        self.lives = 2
 
         # Enemies (testing for now)
         self.test_enemy = arcade.Sprite("sources/enemies/json.jpeg", scale=1)
@@ -216,9 +231,14 @@ class GameView(arcade.View):
 
     def spawn_enemy(self):
         """Spawn an enemy that performs a loop swoop before settling into position."""
+        # set the position on the screen the enemy will settle into after swooping
         target_x = random.randint(50, SCREEN_WIDTH - 50)
         target_y = random.randint(SCREEN_HEIGHT // 2, SCREEN_HEIGHT - 100)
+
+        # spawn a new enemy instance
         enemy = SwoopingEnemy("sources/enemies/json.jpeg", scale=1, target_x=target_x, target_y=target_y)
+
+        # append the enemy to a list of enemies
         self.enemy_list.append(enemy)
 
 
