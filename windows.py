@@ -21,7 +21,7 @@ class SwoopingEnemy(arcade.Sprite):
         self.start_x = random.randint(0, SCREEN_WIDTH)
         self.start_y = SCREEN_HEIGHT
 
-        # set the center of the curve that the enemies will swoop around 
+        # set the center of the point that the enemies will swoop around 
         self.center_x = self.start_x
         self.center_y = self.start_y
 
