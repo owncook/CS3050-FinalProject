@@ -1,8 +1,9 @@
 import random
 import arcade
-import math
-
 import arcade.key
+
+from game_classes import Swooping_Enemy 
+from game_classes import Star 
 
 # --- Constants ---
 SCREEN_WIDTH = 1000
@@ -204,7 +205,7 @@ class GameView(arcade.View):
         target_y = random.randint(SCREEN_HEIGHT // 2, SCREEN_HEIGHT - 100)
 
         # spawn a new enemy instance
-        enemy = SwoopingEnemy("sources/enemies/json.jpeg", scale=1, target_x=target_x, target_y=target_y)
+        enemy = Swooping_Enemy("sources/enemies/json.jpeg", scale=1, target_x=target_x, target_y=target_y)
 
         # append the enemy to a list of enemies
         self.enemy_list.append(enemy)
