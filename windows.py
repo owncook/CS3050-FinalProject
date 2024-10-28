@@ -311,19 +311,23 @@ class GameView(arcade.View):
 
         for bullet in self.bullet_list:
 
-            enemies_hit = arcade.check_for_collision_with_list(bullet, self.enemy_list)
+            enemy_list = self.enemy_trapezoid.get_sprite_lists()
 
-            if (len(enemies_hit) > 0):
-                bullet.remove_from_sprite_lists()
+            for row in enemy_list:
 
-            for enemy in enemies_hit:
-                enemy.remove_from_sprite_lists()
-                self.score += 1
+                enemies_hit = arcade.check_for_collision_with_list(bullet, row)
 
-                arcade.play_sound(self.hit_sound)
-
-            if bullet.bottom > SCREEN_HEIGHT:
+                if (len(enemies_hit) > 0):
                     bullet.remove_from_sprite_lists()
+
+                for enemy in enemies_hit:
+                    enemy.remove_from_sprite_lists()
+                    self.score += 1
+
+                    arcade.play_sound(self.hit_sound)
+
+                if bullet.bottom > SCREEN_HEIGHT:
+                        bullet.remove_from_sprite_lists()
 
 
 
