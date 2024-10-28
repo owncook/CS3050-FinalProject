@@ -1,33 +1,57 @@
 import arcade
 import math
+from swooping_enemy import Swooping_Enemy
+
+# --- Constants ---
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 800
+ENEMY_SCALE = 0.5
+ENEMY_SPACING_X = 80  # Horizontal spacing between enemies
+ENEMY_SPACING_Y = 100  # Vertical spacing between rows
 
 
-
-
-
-
-class trapezoid():
-
-    row1 = arcade.SpriteList()
-    row2 = arcade.SpriteList()
-    row3 = arcade.SpriteList()
-    row4 = arcade.SpriteList()
-    row5 = arcade.SpriteList()
-
+class Trapezoid():
 
     def __init__(self):
-        # For loop to populate 2x10 2x8 and 1x4
+
+        # Initialize SpriteLists for each row
+        self.row1 = arcade.SpriteList()
+        self.row2 = arcade.SpriteList()
+        self.row3 = arcade.SpriteList()
+        self.row4 = arcade.SpriteList()
+        self.row5 = arcade.SpriteList()
+
+        # Populate rows with enemies
+        self.populate_rows()
 
 
-        # enemy = SwoopingEnemy("sources/enemies/json.jpeg", scale=1, target_x=target_x, target_y=target_y)
-
-        # # append the enemy to a list of enemies
-        # self.row1.append(enemy)
-
+    #Populate rows()
+    def populate_rows(self):
+        # Row 1 and Row 2: 10 enemies each
+        self.populate_row(self.row1, 10, SCREEN_HEIGHT - 300)
+        self.populate_row(self.row2, 10, SCREEN_HEIGHT - 400)
     
+    def populate_row(self, row, num_enemies, y_position):
+        """Helper method to populate a row with a given number of enemies at a specified y_position."""
+        # Define the total available width after considering margins (100px on each side)
+        available_width = SCREEN_WIDTH - 200
+        enemy_spacing = available_width / (num_enemies - 1)  # space between each enemy
 
-    # set home position
+        for i in range(num_enemies):
+            # Calculate the target x position for each enemy, starting at the left margin (100px)
+            target_x = 100 + (i * enemy_spacing)  # 100px left margin + spacing
+            target_y = y_position
+            # Create a swooping enemy
+            enemy = Swooping_Enemy("sources/enemies/json.jpeg", ENEMY_SCALE, target_x, target_y)
+            # Append the enemy to the row's SpriteList
+            row.append(enemy)
 
-    # draw sprite
+    def draw(self):
+        """Draw all rows of enemies."""
+        self.row1.draw()
+        self.row2.draw()
 
-
+    def update(self):
+        """Draw all rows of enemies."""
+        self.row1.update()
+        self.row2.update()

@@ -1,8 +1,8 @@
 import random
 import arcade
-import math
-
 import arcade.key
+from trapezoid import Trapezoid
+from star import Star 
 
 # --- Constants ---
 SCREEN_WIDTH = 1000
@@ -167,6 +167,10 @@ class GameView(arcade.View):
         # Don't show the mouse cursor
         self.window.set_mouse_visible(False)
 
+        #Trapezoid
+        self.enemy_trapezoid = Trapezoid()
+        
+
         
     def setup(self):
         """Set up the game variables and objects"""
@@ -182,14 +186,15 @@ class GameView(arcade.View):
         self.score = 0
         self.lives = 2
 
-        # Enemies (testing for now)
-        self.test_enemy = arcade.Sprite("sources/enemies/json.jpeg", scale=1)
-        self.test_enemy.center_x = SCREEN_WIDTH // 2
-        self.test_enemy.center_y = SCREEN_HEIGHT // 2
-        self.enemy_list.append(self.test_enemy)
-        self.time_elapsed = 0
+        # # Enemies (testing for now)
+        # self.test_enemy = arcade.Sprite("sources/enemies/json.jpeg", scale=1)
+        # self.test_enemy.center_x = SCREEN_WIDTH // 2
+        # self.test_enemy.center_y = SCREEN_HEIGHT // 2
+        # self.enemy_list.append(self.test_enemy)
+        # self.time_elapsed = 0
 
-        self.spawn_enemy()  # Initial enemy spawn
+        # self.spawn_enemy()  # Initial enemy spawn
+       
 
         # Setup stars
         for _ in range(STAR_COUNT):
@@ -200,14 +205,16 @@ class GameView(arcade.View):
     def spawn_enemy(self):
         """Spawn an enemy that performs a loop swoop before settling into position."""
         # set the position on the screen the enemy will settle into after swooping
-        target_x = random.randint(50, SCREEN_WIDTH - 50)
-        target_y = random.randint(SCREEN_HEIGHT // 2, SCREEN_HEIGHT - 100)
+        # target_x = random.randint(50, SCREEN_WIDTH - 50)
+        # target_y = random.randint(SCREEN_HEIGHT // 2, SCREEN_HEIGHT - 100)
 
-        # spawn a new enemy instance
-        enemy = SwoopingEnemy("sources/enemies/json.jpeg", scale=1, target_x=target_x, target_y=target_y)
+        # # spawn a new enemy instance
+        # enemy = Swooping_Enemy("sources/enemies/json.jpeg", scale=1, target_x=target_x, target_y=target_y)
 
-        # append the enemy to a list of enemies
-        self.enemy_list.append(enemy)
+        # # append the enemy to a list of enemies
+        # self.enemy_list.append(enemy)
+        
+        
 
 
     def on_draw(self):
@@ -222,6 +229,10 @@ class GameView(arcade.View):
         # Draw enemies and bullets
         self.enemy_list.draw()
         self.bullet_list.draw()
+
+         # Draw the trapezoid
+        self.enemy_trapezoid.draw() 
+
         # Put the text on the screen.
         output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
@@ -275,6 +286,8 @@ class GameView(arcade.View):
         self.player_sprite.update()
         self.bullet_list.update()
         self.enemy_list.update()
+        self.enemy_trapezoid.update()
+       
 
         # Keep the player on the screen
         if self.player_sprite.left < 0:
