@@ -21,10 +21,16 @@ class Trapezoid():
         self.row4 = arcade.SpriteList()
         self.row5 = arcade.SpriteList()
 
+        # Create a nested list to hold the rows
+        self.enemies_nested_list = [self.row1, self.row2, self.row3, self.row4, self.row5]
+
         # Populate rows with enemies
         self.populate_rows()
 
-
+    def get_sprite_lists(self):
+        
+        return self.enemies_nested_list
+    
     #Populate rows()
     def populate_rows(self):
         # Row 1 and Row 2: 10 enemies each
