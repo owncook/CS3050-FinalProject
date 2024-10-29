@@ -14,10 +14,10 @@ TWINKLE_SPEED = 0.1
 
 class Swooping_Enemy(arcade.Sprite):
     """Enemy class to populate the enemies in a swooping motion every two seconds for now. Will potentially update as we count time game has gone on for/to make grid more rigid instead of random."""
-    def __init__(self, image, scale, target_x, target_y):
+    def __init__(self, image, scale, home_x, home_y):
         super().__init__(image, scale)
         # set where on the screen the enemies will spawn from
-        self.start_x = target_x
+        self.start_x = home_x
         self.start_y = SCREEN_HEIGHT
 
         # set the center of the curve that the enemies will swoop around 
@@ -25,12 +25,18 @@ class Swooping_Enemy(arcade.Sprite):
         self.center_y = self.start_y
 
         # set the final position that they enemy will settle into after the swoop 
-        self.target_x = target_x
-        self.target_y = target_y
+        self.home_x = home_x
+        self.home_y = home_y
+
+        # target for the enemies
+        self.target_x = None
+        self.target_y = None
 
         # initialize a timer for the enemy swoop motion
         self.swoop_timer = 0  
 
+        #TODO: spawnmove()
+        
     def update(self):
         """Update the enemy's movement."""
         # swoop the enemy into position over the course of two seconds
@@ -48,8 +54,8 @@ class Swooping_Enemy(arcade.Sprite):
             self.center_y = self.start_y - (self.swoop_timer * 100)  
 
         else:
-            # after swooping, move the enemy to the target position if the new y-coordinate is greater than the target y-coordinate 
-            if self.center_y > self.target_y:
+            # after swooping, move the enemy to the home position if the new y-coordinate is greater than the home y-coordinate 
+            if self.center_y > self.home_y:
                 self.center_y -= 2  # move downward
 
         # increment the swoop timer

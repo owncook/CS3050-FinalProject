@@ -34,13 +34,14 @@ class Trapezoid():
     #Populate rows()
     def populate_rows(self):
 
+        #TODO:replace magic numbers for y pos
         
 
         # poulating the rows of the trapezoid with the enemy classes
         self.populate_row(self.row1, 10, SCREEN_HEIGHT - 400, "bee")
         self.populate_row(self.row2, 10, SCREEN_HEIGHT - 350, "bee")
-        self.populate_row(self.row3, 10, SCREEN_HEIGHT - 300, "butterfly")
-        self.populate_row(self.row4, 10, SCREEN_HEIGHT - 250, "butterfly")
+        self.populate_row(self.row3, 8, SCREEN_HEIGHT - 300, "butterfly")
+        self.populate_row(self.row4, 8, SCREEN_HEIGHT - 250, "butterfly")
         self.populate_row(self.row5, 4, SCREEN_HEIGHT - 200, "json")
 
         
@@ -54,7 +55,8 @@ class Trapezoid():
         available_width = SCREEN_WIDTH - 200
         enemy_spacing = available_width / (num_enemies - 1)  # space between each enemy
 
-        
+
+        #TODO: add a pause between row populating the screen
 
         for i in range(num_enemies):
             # Calculate the target x position for each enemy, starting at the left margin (100px)
