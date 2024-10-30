@@ -9,7 +9,7 @@ class Swooping_Enemy(arcade.Sprite):
         super().__init__(image, scale)
         # set where on the screen the enemies will spawn from
         self.start_x = home_x
-        self.start_y = home_y #TODO: will be updated to go with the spawnMovement() method
+        self.start_y = constant.SCREEN_HEIGHT #TODO: will be updated to go with the spawnMovement() method
 
         # set the center of the curve that the enemies will swoop around 
         self.center_x = self.start_x
