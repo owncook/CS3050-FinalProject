@@ -1,5 +1,6 @@
 import arcade
 import math
+import constant
 from swooping_enemy import Swooping_Enemy
 
 # --- Constants ---
