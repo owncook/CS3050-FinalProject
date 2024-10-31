@@ -32,7 +32,7 @@ class Trapezoid():
         for i in range(int(num_enemies / 2)):
 
             home_x = (((i + 1) * (ENEMY_SPACING_X / 2 + sprite_width / 2))
-                      + (i * (sprite_width + ENEMY_SPACING_X / 2)))
+                      + (i * (sprite_width / 2 + ENEMY_SPACING_X / 2)))
 
 
             left_sprite = (Swooping_Enemy(image_path,
