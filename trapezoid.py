@@ -86,5 +86,3 @@ class Trapezoid():
         for enemy in self.trapezoid_sprites:
             enemy.update_attack_timer(delta_time)  # Increment attack timer for each enemy
             enemy.update(delta_time)  # Update each enemy
-
-            
