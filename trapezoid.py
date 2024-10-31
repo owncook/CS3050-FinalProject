@@ -50,7 +50,7 @@ class Trapezoid():
 
         #TODO: add a pause between row populating the screen
 
-        home_y = constant.SCREEN_HEIGHT - MARGIN_Y
+        home_y = constant.SCREEN_HEIGHT - constant.MARGIN_Y
         self.populate_row(num_boss, 'json', home_y)
         home_y -= constant.ENEMY_SPACING_Y
         self.populate_row(num_butterflies, 'json', home_y)
