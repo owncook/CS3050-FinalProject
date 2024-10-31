@@ -19,21 +19,21 @@ class Trapezoid():
     def populate_row(self, num_enemies, enemy_type, home_y):
         
         image_path = 'sources/enemies/' + enemy_type + '.jpeg'
-        sprite_width = arcade.Sprite(image_path, ENEMY_SCALE, 0, 0).width
+        sprite_width = arcade.Sprite(image_path, constant.ENEMY_SCALE, 0, 0).width
 
         for i in range(int(num_enemies / 2)):
 
-            home_x = (((i + 1) * (ENEMY_SPACING_X / 2 + sprite_width / 2))
-                      + (i * (sprite_width / 2 + ENEMY_SPACING_X / 2)))
+            home_x = (((i + 1) * (constant.ENEMY_SPACING_X / 2 + sprite_width / 2))
+                      + (i * (sprite_width / 2 + constant.ENEMY_SPACING_X / 2)))
 
 
             left_sprite = (Swooping_Enemy(image_path,
-                                          ENEMY_SCALE,
-                                          SCREEN_WIDTH // 2 - home_x,
+                                          constant.ENEMY_SCALE,
+                                          constant.SCREEN_WIDTH // 2 - home_x,
                                           home_y))
             right_sprite = (Swooping_Enemy(image_path,
-                                          ENEMY_SCALE,
-                                          SCREEN_WIDTH // 2 + home_x,
+                                          constant.ENEMY_SCALE,
+                                          constant.SCREEN_WIDTH // 2 + home_x,
                                           home_y))
 
             self.trapezoid_sprites.append(left_sprite)
@@ -50,15 +50,15 @@ class Trapezoid():
 
         #TODO: add a pause between row populating the screen
 
-        home_y = SCREEN_HEIGHT - MARGIN_Y
+        home_y = constant.SCREEN_HEIGHT - MARGIN_Y
         self.populate_row(num_boss, 'json', home_y)
-        home_y -= ENEMY_SPACING_Y
+        home_y -= constant.ENEMY_SPACING_Y
         self.populate_row(num_butterflies, 'json', home_y)
-        home_y -= ENEMY_SPACING_Y
+        home_y -= constant.ENEMY_SPACING_Y
         self.populate_row(num_butterflies, 'json', home_y)
-        home_y -= ENEMY_SPACING_Y
+        home_y -= constant.ENEMY_SPACING_Y
         self.populate_row(num_bees, 'json', home_y)
-        home_y -= ENEMY_SPACING_Y
+        home_y -= constant.ENEMY_SPACING_Y
         self.populate_row(num_bees, 'json', home_y)
         
         
