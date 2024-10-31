@@ -3,15 +3,6 @@ import math
 import constant
 from swooping_enemy import Swooping_Enemy
 
-# --- Constants ---
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 800
-ENEMY_SCALE = 0.25
-ENEMY_SPACING_X = 40  # Horizontal spacing between enemies
-ENEMY_SPACING_Y = 50  # Vertical spacing between rows
-MARGIN_X = 100
-MARGIN_Y = 200
-
 
 class Trapezoid():
 
