@@ -82,8 +82,8 @@ class Swooping_Enemy(arcade.Sprite):
         bullet.center_x = self.center_x
         bullet.center_y = self.center_y
         angle = math.atan2(self.target_y - self.center_y, self.target_x - self.center_x)
-        bullet.change_x = math.cos(angle) * BULLET_SPEED
-        bullet.change_y = math.sin(angle) * BULLET_SPEED
+        bullet.change_x = math.cos(angle) * constant.BULLET_SPEED
+        bullet.change_y = math.sin(angle) * constant.BULLET_SPEED
         return bullet
     
     def on_draw(self):
