@@ -1,5 +1,6 @@
 import arcade
 import math
+import random
 from swooping_enemy import Swooping_Enemy
 
 # --- Constants ---
@@ -8,6 +9,7 @@ SCREEN_HEIGHT = 800
 ENEMY_SCALE = 0.25
 ENEMY_SPACING_X = 80  # Horizontal spacing between enemies
 ENEMY_SPACING_Y = 100  # Vertical spacing between rows
+ATTACK_INTERVAL = 8  # seconds
 
 
 class Trapezoid():
@@ -24,6 +26,8 @@ class Trapezoid():
         # Create a nested list to hold the rows
         self.enemies_nested_list = [self.row1, self.row2, self.row3, self.row4, self.row5]
 
+        self.attack_timer = 0  # Track time for attacks
+
         # Populate rows with enemies
         self.populate_rows()
 
@@ -38,11 +42,18 @@ class Trapezoid():
         
 
         # poulating the rows of the trapezoid with the enemy classes
-        self.populate_row(self.row1, 10, SCREEN_HEIGHT - 400, "bee")
-        self.populate_row(self.row2, 10, SCREEN_HEIGHT - 350, "bee")
-        self.populate_row(self.row3, 8, SCREEN_HEIGHT - 300, "butterfly")
-        self.populate_row(self.row4, 8, SCREEN_HEIGHT - 250, "butterfly")
-        self.populate_row(self.row5, 4, SCREEN_HEIGHT - 200, "json")
+        #self.populate_row(self.row1, 10, SCREEN_HEIGHT - 400, "bee")
+        #self.populate_row(self.row2, 10, SCREEN_HEIGHT - 350, "bee")
+        #self.populate_row(self.row3, 8, SCREEN_HEIGHT - 300, "butterfly")
+        #self.populate_row(self.row4, 8, SCREEN_HEIGHT - 250, "butterfly")
+        #self.populate_row(self.row5, 4, SCREEN_HEIGHT - 200, "json")
+
+        # tester function for attack 
+
+        for row, y_pos in zip(self.enemies_nested_list, range(700, 500, -50)):
+            for i in range(10):
+                enemy = Swooping_Enemy("sources/enemies/json.jpeg", 0.5, i * 80 + 50, y_pos)
+                row.append(enemy)
 
         
 
@@ -85,10 +96,26 @@ class Trapezoid():
         self.row4.draw()
         self.row5.draw()
 
-    def update(self):
+    def update(self, delta_time, player_x, player_y):
         """Draw all rows of enemies."""
-        self.row1.update()
-        self.row2.update()
-        self.row3.update()
-        self.row4.update()
-        self.row5.update()
+        #self.row1.update()
+        #self.row2.update()
+        #self.row3.update()
+        #self.row4.update()
+        #self.row5.update()
+
+        self.attack_timer += delta_time
+        if self.attack_timer >= ATTACK_INTERVAL:
+            row = random.choice(self.enemies_nested_list)
+            if row:
+                enemy = random.choice(row)
+                enemy.update_attack_timer(delta_time)  # Increment the attack timer
+                enemy.attack(player_x, player_y)      # Call the attack method
+            self.attack_timer = 0
+
+        for row in self.enemies_nested_list:
+            for enemy in row:
+                enemy.update_attack_timer(delta_time)  # Increment attack timer for each enemy
+                enemy.update(delta_time)  # Update each enemy
+
+            
