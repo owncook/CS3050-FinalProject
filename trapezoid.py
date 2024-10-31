@@ -1,6 +1,7 @@
 import arcade
 import math
 import constant
+import random
 from swooping_enemy import Swooping_Enemy
 
 
@@ -10,6 +11,8 @@ class Trapezoid():
 
         # Initialize SpriteLists for each row
         self.trapezoid_sprites = arcade.SpriteList()
+
+        self.attack_timer = 0  # Track time for attacks
 
         # Populate rows with enemies
         self.populate_rows([4, 8, 10])
@@ -68,6 +71,21 @@ class Trapezoid():
         """Draw all rows of enemies."""
         self.trapezoid_sprites.draw()
 
-    def update(self):
+    def update(self, delta_time, player_x, player_y):
         """Draw all rows of enemies."""
-        self.trapezoid_sprites.update()
+
+        self.attack_timer += delta_time
+        if self.attack_timer >= constant.ATTACK_INTERVAL:
+            row = random.choice(self.enemies_nested_list)
+            if row:
+                enemy = random.choice(row)
+                enemy.update_attack_timer(delta_time)  # Increment the attack timer
+                enemy.attack(player_x, player_y)      # Call the attack method
+            self.attack_timer = 0
+
+        for row in self.enemies_nested_list:
+            for enemy in row:
+                enemy.update_attack_timer(delta_time)  # Increment attack timer for each enemy
+                enemy.update(delta_time)  # Update each enemy
+
+            
