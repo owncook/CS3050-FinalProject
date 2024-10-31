@@ -76,16 +76,15 @@ class Trapezoid():
 
         self.attack_timer += delta_time
         if self.attack_timer >= constant.ATTACK_INTERVAL:
-            row = random.choice(self.enemies_nested_list)
-            if row:
-                enemy = random.choice(row)
-                enemy.update_attack_timer(delta_time)  # Increment the attack timer
-                enemy.attack(player_x, player_y)      # Call the attack method
+
+            enemy = random.choice(self.trapezoid_sprites)
+            enemy.update_attack_timer(delta_time)  # Increment the attack timer
+            enemy.attack(player_x, player_y)      # Call the attack method
             self.attack_timer = 0
 
-        for row in self.enemies_nested_list:
-            for enemy in row:
-                enemy.update_attack_timer(delta_time)  # Increment attack timer for each enemy
-                enemy.update(delta_time)  # Update each enemy
+
+        for enemy in self.trapezoid_sprites:
+            enemy.update_attack_timer(delta_time)  # Increment attack timer for each enemy
+            enemy.update(delta_time)  # Update each enemy
 
             
