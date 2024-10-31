@@ -1,15 +1,9 @@
 import arcade
 import math
+import constant
 import random
 from swooping_enemy import Swooping_Enemy
 
-# --- Constants ---
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 800
-ENEMY_SCALE = 0.25
-ENEMY_SPACING_X = 80  # Horizontal spacing between enemies
-ENEMY_SPACING_Y = 100  # Vertical spacing between rows
-ATTACK_INTERVAL = 8  # seconds
 
 
 class Trapezoid():
@@ -42,11 +36,11 @@ class Trapezoid():
         
 
         # poulating the rows of the trapezoid with the enemy classes
-        #self.populate_row(self.row1, 10, SCREEN_HEIGHT - 400, "bee")
-        #self.populate_row(self.row2, 10, SCREEN_HEIGHT - 350, "bee")
-        #self.populate_row(self.row3, 8, SCREEN_HEIGHT - 300, "butterfly")
-        #self.populate_row(self.row4, 8, SCREEN_HEIGHT - 250, "butterfly")
-        #self.populate_row(self.row5, 4, SCREEN_HEIGHT - 200, "json")
+        #self.populate_row(self.row1, 10, constant.SCREEN_HEIGHT - 400, "bee")
+        #self.populate_row(self.row2, 10, constant.SCREEN_HEIGHT - 350, "bee")
+        #self.populate_row(self.row3, 8, constant.SCREEN_HEIGHT - 300, "butterfly")
+        #self.populate_row(self.row4, 8, constant.SCREEN_HEIGHT - 250, "butterfly")
+        #self.populate_row(self.row5, 4, constant.SCREEN_HEIGHT - 200, "json")
 
         # tester function for attack 
 
@@ -63,7 +57,7 @@ class Trapezoid():
     def populate_row(self, row, num_enemies, y_position, enemy_class):
         """Helper method to populate a row with a given number of enemies at a specified y_position."""
         # Define the total available width after considering margins (100px on each side)
-        available_width = SCREEN_WIDTH - 200
+        available_width = constant.SCREEN_WIDTH - 200
         enemy_spacing = available_width / (num_enemies - 1)  # space between each enemy
 
 
@@ -76,15 +70,15 @@ class Trapezoid():
             # Create a swooping enemy
             match enemy_class:
                 case "bee":
-                    enemy = Swooping_Enemy("sources/enemies/json.jpeg", ENEMY_SCALE, target_x, target_y)
+                    enemy = Swooping_Enemy("sources/enemies/json.jpeg", constant.ENEMY_SCALE, target_x, target_y)
                 case "bee":
-                    enemy = Swooping_Enemy("sources/enemies/json.jpeg", ENEMY_SCALE, target_x, target_y)   
+                    enemy = Swooping_Enemy("sources/enemies/json.jpeg", constant.ENEMY_SCALE, target_x, target_y)   
                 case "butterfly":
-                    enemy = Swooping_Enemy("sources/enemies/json.jpeg", ENEMY_SCALE, target_x, target_y)
+                    enemy = Swooping_Enemy("sources/enemies/json.jpeg", constant.ENEMY_SCALE, target_x, target_y)
                 case "butterfly":
-                    enemy = Swooping_Enemy("sources/enemies/json.jpeg", ENEMY_SCALE, target_x, target_y)
+                    enemy = Swooping_Enemy("sources/enemies/json.jpeg", constant.ENEMY_SCALE, target_x, target_y)
                 case "json":
-                    enemy = Swooping_Enemy("sources/enemies/json.jpeg", ENEMY_SCALE, target_x, target_y)        
+                    enemy = Swooping_Enemy("sources/enemies/json.jpeg", constant.ENEMY_SCALE, target_x, target_y)        
             # Append the enemy to the row's SpriteList
             row.append(enemy)
 
