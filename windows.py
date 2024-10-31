@@ -1,19 +1,9 @@
 import random
 import arcade
 import arcade.key
+import constant
 from trapezoid import Trapezoid
 from star import Star 
-
-# --- Constants ---
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 800
-PLAYER_SCALE = .075
-BULLET_SPEED = 10
-SCREEN_TITLE = "Galaga Game Window"
-ENEMY_SPAWN_INTERVAL = 3
-STAR_COUNT = 100
-STAR_SPEED = 2
-TWINKLE_SPEED = 0.1
 
 
 
@@ -33,8 +23,8 @@ class StartView(arcade.View):
         self.star_list = []
         # Generate star positions
         for _ in range(50): # Adjust the passed range to change the amount of stars
-            x = random.randint(0, SCREEN_WIDTH)
-            y = random.randint(0, SCREEN_HEIGHT)
+            x = random.randint(0, constant.SCREEN_WIDTH)
+            y = random.randint(0, constant.SCREEN_HEIGHT)
             self.star_list.append((x, y))
 
     def on_draw(self):
@@ -47,8 +37,8 @@ class StartView(arcade.View):
     
         # Setting variables used in the drawing of start screen
         text = "GALAGA"
-        text_x = SCREEN_WIDTH // 2
-        text_y = SCREEN_HEIGHT // 1.75
+        text_x = constant.SCREEN_WIDTH // 2
+        text_y = constant.SCREEN_HEIGHT // 1.75
         outline_color = arcade.color.RED
         fill_color = arcade.color.GREEN
 
@@ -95,13 +85,13 @@ class PauseView(arcade.View):
                                           bottom=player_sprite.bottom,
                                           color=arcade.color.ORANGE + (200,))
 
-        arcade.draw_text("PAUSED", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50,
+        arcade.draw_text("PAUSED", constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2 + 50,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
 
         # Show tip to return or reset
         arcade.draw_text("Press esc to return to play",
-                         SCREEN_WIDTH / 2,
-                         SCREEN_HEIGHT / 2,
+                         constant.SCREEN_WIDTH / 2,
+                         constant.SCREEN_HEIGHT / 2,
                          arcade.color.BLACK,
                          font_size=20,
                          anchor_x="center")
@@ -123,13 +113,13 @@ class GameOverView(arcade.View):
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
-        arcade.set_viewport(0, SCREEN_WIDTH - 1, 0, SCREEN_HEIGHT - 1)
+        arcade.set_viewport(0, constant.SCREEN_WIDTH - 1, 0, constant.SCREEN_HEIGHT - 1)
 
     def on_draw(self):
         """ Draw this view """
         self.clear()
-        self.texture.draw_sized(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
-                                SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.texture.draw_sized(constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2,
+                                constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ If the user presses the mouse button, re-start the game. """
@@ -175,8 +165,8 @@ class GameView(arcade.View):
     def setup(self):
         """Set up the game variables and objects"""
         # Initialize player sprite and sprite lists
-        self.player_sprite = arcade.Sprite("sources/player.png", scale=PLAYER_SCALE)
-        self.player_sprite.center_x = SCREEN_WIDTH // 2
+        self.player_sprite = arcade.Sprite("sources/player.png", scale=constant.PLAYER_SCALE)
+        self.player_sprite.center_x = constant.SCREEN_WIDTH // 2
         self.player_sprite.center_y = 50
         
         # Initialize sprite lists
@@ -197,7 +187,7 @@ class GameView(arcade.View):
        
 
         # Setup stars
-        for _ in range(STAR_COUNT):
+        for _ in range(constant.STAR_COUNT):
             star = Star()
             self.star_list.append(star)
 
@@ -255,7 +245,7 @@ class GameView(arcade.View):
 
             bullet.angle = 90
 
-            bullet.change_y = BULLET_SPEED
+            bullet.change_y = constant.BULLET_SPEED
 
             bullet.center_x = self.player_sprite.center_x
             bullet.bottom = self.player_sprite.top
@@ -292,8 +282,8 @@ class GameView(arcade.View):
         # Keep the player on the screen
         if self.player_sprite.left < 0:
             self.player_sprite.left = 0
-        elif self.player_sprite.right > SCREEN_WIDTH:
-            self.player_sprite.right = SCREEN_WIDTH
+        elif self.player_sprite.right > constant.SCREEN_WIDTH:
+            self.player_sprite.right = constant.SCREEN_WIDTH
 
         # Increment the time elapsed
         self.time_elapsed += delta_time
@@ -303,7 +293,7 @@ class GameView(arcade.View):
             star.update()
 
         # Check if 10 seconds have passed
-        if self.time_elapsed >= ENEMY_SPAWN_INTERVAL:
+        if self.time_elapsed >= constant.ENEMY_SPAWN_INTERVAL:
             # Spawn a new enemy
             self.spawn_enemy()
             # Reset the timer
@@ -326,7 +316,7 @@ class GameView(arcade.View):
 
                     arcade.play_sound(self.hit_sound)
 
-                if bullet.bottom > SCREEN_HEIGHT:
+                if bullet.bottom > constant.SCREEN_HEIGHT:
                         bullet.remove_from_sprite_lists()
 
 
@@ -334,7 +324,7 @@ class GameView(arcade.View):
 def main():
     """ Main function """
 
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT, constant.SCREEN_TITLE)
     start_view = StartView()
     window.show_view(start_view)
     arcade.run()

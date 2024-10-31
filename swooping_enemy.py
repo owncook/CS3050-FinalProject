@@ -1,16 +1,7 @@
 import arcade
 import math
+import constant
 
-# --- Constants ---
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 800
-PLAYER_SCALE = .075
-BULLET_SPEED = 10
-SCREEN_TITLE = "Galaga Game Window"
-ENEMY_SPAWN_INTERVAL = 3
-STAR_COUNT = 100
-STAR_SPEED = 2
-TWINKLE_SPEED = 0.1
 
 class Swooping_Enemy(arcade.Sprite):
     """Enemy class to populate the enemies in a swooping motion every two seconds for now. Will potentially update as we count time game has gone on for/to make grid more rigid instead of random."""
@@ -18,7 +9,7 @@ class Swooping_Enemy(arcade.Sprite):
         super().__init__(image, scale)
         # set where on the screen the enemies will spawn from
         self.start_x = home_x
-        self.start_y = SCREEN_HEIGHT
+        self.start_y = constant.SCREEN_HEIGHT #TODO: will be updated to go with the spawnMovement() method
 
         # set the center of the curve that the enemies will swoop around 
         self.center_x = self.start_x
@@ -60,3 +51,11 @@ class Swooping_Enemy(arcade.Sprite):
 
         # increment the swoop timer
         self.swoop_timer += 1 / 60  # update timer based on 60 fps
+
+    
+
+
+
+
+
+
