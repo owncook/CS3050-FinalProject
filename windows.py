@@ -220,7 +220,7 @@ class GameView(arcade.View):
             bullet.center_x = enemy.center_x
             bullet.center_y = enemy.top  # Start the bullet just above the enemy
             bullet.angle = 270  # Assuming downwards is 270 degrees
-            bullet.change_y = -BULLET_SPEED  # Moving down
+            bullet.change_y = -constant.BULLET_SPEED  # Moving down
             self.enemy_bullet_list.append(bullet)
         
 

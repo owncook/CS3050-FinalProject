@@ -99,7 +99,7 @@ class Trapezoid():
         #self.row5.update()
 
         self.attack_timer += delta_time
-        if self.attack_timer >= ATTACK_INTERVAL:
+        if self.attack_timer >= constant.ATTACK_INTERVAL:
             row = random.choice(self.enemies_nested_list)
             if row:
                 enemy = random.choice(row)
