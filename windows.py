@@ -277,7 +277,6 @@ class GameView(arcade.View):
         self.bullet_list.update()
         self.enemy_list.update()
         self.enemy_trapezoid.update()
-       
 
         # Keep the player on the screen
         if self.player_sprite.left < 0:
@@ -307,17 +306,22 @@ class GameView(arcade.View):
 
                 enemies_hit = arcade.check_for_collision_with_list(bullet, row)
 
+
                 if (len(enemies_hit) > 0):
                     bullet.remove_from_sprite_lists()
+
 
                 for enemy in enemies_hit:
                     enemy.remove_from_sprite_lists()
                     self.score += 1
 
+
+
                     arcade.play_sound(self.hit_sound)
 
                 if bullet.bottom > constant.SCREEN_HEIGHT:
                         bullet.remove_from_sprite_lists()
+
 
 
 
