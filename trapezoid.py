@@ -82,6 +82,8 @@ class Trapezoid():
             # Append the enemy to the row's SpriteList
             row.append(enemy)
 
+    def check_trapezoid_empty(self):
+        return len(self.enemies_nested_list) > 0
     def draw(self):
         """Draw all rows of enemies."""
         self.row1.draw()
