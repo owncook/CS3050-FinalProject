@@ -4,7 +4,8 @@ import constant
 
 
 class Swooping_Enemy(arcade.Sprite):
-    """Enemy class to populate the enemies in a swooping motion every two seconds for now. Will potentially update as we count time game has gone on for/to make grid more rigid instead of random."""
+    """Enemy class to populate the enemies in a swooping motion every two seconds for now.
+    Will potentially update as we count time game has gone on for/to make grid more rigid instead of random."""
     def __init__(self, image, scale, home_x, home_y):
         super().__init__(image, scale)
         # set where on the screen the enemies will spawn from
