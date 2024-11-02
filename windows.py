@@ -342,6 +342,9 @@ class GameView(arcade.View):
             # Reset the timer
             self.time_elapsed = 0
 
+        if self.enemy_trapezoid.check_trapezoid_empty():
+            self.enemy_trapezoid.populate_rows([4, 8, 10])
+
         for bullet in self.bullet_list:
 
             enemy_list = self.enemy_trapezoid.trapezoid_sprites
