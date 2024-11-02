@@ -73,9 +73,9 @@ class Trapezoid():
         self.populate_row(num_bees, 'json', home_y)
         home_y -= constant.ENEMY_SPACING_Y
         self.populate_row(num_bees, 'json', home_y)
-        
-        
-        
+
+    def check_trapezoid_empty(self):
+        return len(self.trapezoid_sprites) <= 0
 
     def draw(self):
         """Draw all rows of enemies."""
