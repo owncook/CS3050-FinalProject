@@ -24,6 +24,8 @@ class Trapezoid():
         image_path = 'sources/enemies/' + enemy_type + '.jpeg'
         sprite_width = arcade.Sprite(image_path, constant.ENEMY_SCALE, 0, 0).width
 
+        group_delay = 0
+
         for i in range(int(num_enemies / 2)):
 
             home_x = (((i + 1) * (constant.ENEMY_SPACING_X / 2 + sprite_width / 2))
@@ -38,6 +40,14 @@ class Trapezoid():
                                           constant.ENEMY_SCALE,
                                           constant.SCREEN_WIDTH // 2 + home_x,
                                           home_y))
+            
+            # Set a delay for each pair of enemies (you can adjust this to get the effect you want)
+            left_sprite.start_delay = group_delay
+            right_sprite.start_delay = group_delay
+
+            # Increase delay for the next group
+            group_delay += 1 
+
 
             self.trapezoid_sprites.append(left_sprite)
             self.trapezoid_sprites.append(right_sprite)
@@ -72,7 +82,7 @@ class Trapezoid():
         self.trapezoid_sprites.draw()
 
     def update(self, delta_time, player_x, player_y):
-        """Draw all rows of enemies."""
+        """Update all rows of enemies."""
 
         self.attack_timer += delta_time
         if self.attack_timer >= constant.ATTACK_INTERVAL:
