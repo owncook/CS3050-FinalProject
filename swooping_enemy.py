@@ -3,8 +3,6 @@ import math
 import constant
 
 
-BULLET_SPEED = 3
-
 
 class Swooping_Enemy(arcade.Sprite):
     """Enemy class to populate the enemies in a swooping motion every two seconds for now.
@@ -12,16 +10,16 @@ class Swooping_Enemy(arcade.Sprite):
     def __init__(self, image, scale, home_x, home_y):
         super().__init__(image, scale)
         # set where on the screen the enemies will spawn from
-        self.start_x = home_x
-        self.start_y = constant.SCREEN_HEIGHT #TODO: will be updated to go with the spawnMovement() method
-
-        # set the center of the curve that the enemies will swoop around 
-        self.center_x = self.start_x
-        self.center_y = self.start_y
+        self.start_x = constant.SCREEN_WIDTH/2
+        self.start_y = constant.SCREEN_HEIGHT + 200#TODO: will be updated to go with the spawnMovement() method
 
         # set the final position that they enemy will settle into after the swoop 
         self.home_x = home_x
         self.home_y = home_y
+
+        # set the center of the curve that the enemies will swoop around 
+        self.center_x = self.start_x
+        self.center_y = self.start_y
 
         # target for the enemies
         self.target_x = None
@@ -32,19 +30,24 @@ class Swooping_Enemy(arcade.Sprite):
         self.frame_count = 0
         self.enemy_bullet_list = arcade.SpriteList()
 
+        #In intiliazation set is_spawning to true for movement update
+        self.is_spawning = True
+        self.start_delay = 0 
+        self.swoop_timer = 0
+
         # initialize boolean for the enemy's attack status
         self.is_attacking = False
-
-
-        #TODO: spawnmove()
 
     def setup(self):
         self.enemy_bullet_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
-        self.player_list = arcade.SpriteList()
+        #self.player_list = arcade.SpriteList() #TODO I don't believe this is being used anywhere, should we remove it? -TS
 
     def attack(self, enemy, player_x, player_y):
         """Set the enemy to swoop down and shoot bullets."""
+        #if enemy is still in spawning process leave function
+        if self.is_spawning:
+            return
         self.is_attacking = True
         self.frame_count = 0
         self.swoop_timer = 0
@@ -53,28 +56,6 @@ class Swooping_Enemy(arcade.Sprite):
         bullet = self.fire_bullet()
         self.enemy_bullet_list.append(bullet)
 
-    def swoop_into_position(self):
-        #swoop the enemy into position over the course of two seconds
-        if self.swoop_timer < 2.0:
-            #achieve curved movement using sine calculation
-
-            #the angle of the swoop over one second
-            swoop_angle = self.swoop_timer * math.pi * 1 # full circle over 1 second
-
-            #the radius of the swoop 
-            radius = 300  
-
-            #calculate new x, y for the enemy as it swoops 
-            self.center_x = self.start_x + math.sin(swoop_angle) * radius
-            self.center_y = self.start_y - (self.swoop_timer * 100)  
-
-        else:
-            #after swooping, move the enemy to the home position if the new y-coordinate is greater than the home y-coordinate 
-            if self.center_y > self.home_y:
-                self.center_y -= 2  # move downward
-
-        #increment the swoop timer
-        self.swoop_timer += 1 / 60  # update timer based on 60 fps
 
     def fire_bullet(self):
         """Fire a bullet towards the player."""
@@ -90,6 +71,8 @@ class Swooping_Enemy(arcade.Sprite):
         arcade.start_render()
         self.enemy_bullet_list.draw()
 
+    
+
     def update_attack_timer(self, delta_time):
         """Increment attack timer by delta_time."""
         self.swoop_timer += delta_time 
@@ -99,13 +82,13 @@ class Swooping_Enemy(arcade.Sprite):
         if self.is_attacking:
             self.frame_count += 1
             # Calculate Bézier curve points for a smooth swoop
-            control_x = (self.start_x + self.target_x) / 2
-            control_y = max(self.start_y, self.target_y) + 150  # control point above player
+            control_x = (self.home_x + self.target_x) / 2
+            control_y = max(self.home_y, self.target_y) + 150  # control point above player
 
             # Quadratic Bézier parameter t, from 0 to 1 over 2 seconds
             t = min(self.swoop_timer / 8, 1)
-            self.center_x = (1 - t)**2 * self.start_x + 2 * (1 - t) * t * control_x + t**8 * self.target_x
-            self.center_y = (1 - t)**2 * self.start_y + 2 * (1 - t) * t * control_y + t**8 * self.target_y
+            self.center_x = (1 - t)**2 * self.home_x + 2 * (1 - t) * t * control_x + t**8 * self.target_x
+            self.center_y = (1 - t)**2 * self.home_y + 2 * (1 - t) * t * control_y + t**8 * self.target_y
 
             # Increment swoop timer
             self.swoop_timer += delta_time
@@ -117,7 +100,7 @@ class Swooping_Enemy(arcade.Sprite):
                 bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
                 bullet.center_x = self.center_x  # Spawn bullet at enemy's current position
                 bullet.center_y = self.center_y  # Spawn bullet at enemy's current position
-                bullet.change_y = -BULLET_SPEED  # Move bullet straight down
+                bullet.change_y = -constant.BULLET_SPEED  # Move bullet straight down
                 self.enemy_bullet_list.append(bullet)
             
             # Check if reached target or left screen
@@ -125,11 +108,40 @@ class Swooping_Enemy(arcade.Sprite):
                 # Reset after swoop ends
                 self.is_attacking = False
                 self.center_x = self.home_x
-                self.center_y = self.home_y
+                self.center_y = constant.SCREEN_HEIGHT
                 self.swoop_timer = 0  # Reset swoop timer for next attack
-        else: 
-            self.swoop_into_position()
+        
+        elif self.is_spawning:
+            if self.swoop_timer >= self.start_delay:
+                # Set the final target position for swooping to be the enemy's home position
+                self.target_x = self.home_x
+                self.target_y = self.home_y
 
+                #From here out the is_spawning movement logiv is very similar to the first half of the is_attacking
+                control_x = (self.start_x + self.target_x) / 2
+                control_y = max(self.start_y, self.target_y) + 150  
+
+              
+                t = min(self.swoop_timer / 10, 1)
+                
+                self.center_x = (1 - t)**2 * self.start_x + 2 * (1 - t) * t * control_x + t**2 * self.target_x
+                self.center_y = (1 - t)**2 * self.start_y + 2 * (1 - t) * t * control_y + t**2 * self.target_y
+
+                self.swoop_timer += delta_time
+
+                # Check if the swooping motion is complete (i.e., reached target position)
+                if t >= 1:
+                    self.is_spawning = False  # Mark spawning as complete to stop swooping motion
+                    self.center_x = self.home_x  # Ensure enemy ends at home position
+                    self.center_y = self.home_y
+                    self.swoop_timer = 0      # Reset swoop timer
+        else:
+           # When attack is over, reset to start descending from top of screen
+            if self.center_y > self.home_y:
+                self.center_y -= constant.ENEMY_SPEED  # Move down until reaching home_y
+            else:
+                # Stop at home_y position
+                self.center_y = self.home_y
         # Update bullets and remove off-screen bullets
         self.enemy_bullet_list.update()
 

@@ -200,18 +200,6 @@ class GameView(arcade.View):
             star = Star()
             self.star_list.append(star)
 
-
-    def spawn_enemy(self):
-        """Spawn an enemy that performs a loop swoop before settling into position."""
-        # set the position on the screen the enemy will settle into after swooping
-        # target_x = random.randint(50, SCREEN_WIDTH - 50)
-        # target_y = random.randint(SCREEN_HEIGHT // 2, SCREEN_HEIGHT - 100)
-
-        # # spawn a new enemy instance
-        # enemy = Swooping_Enemy("sources/enemies/json.jpeg", scale=1, target_x=target_x, target_y=target_y)
-
-        # # append the enemy to a list of enemies
-        # self.enemy_list.append(enemy)
         
     def enemy_shoot(self):
         """Handle shooting bullets from enemies."""
@@ -335,12 +323,7 @@ class GameView(arcade.View):
                 if self.lives <= 0:
                     game_over_view = GameOverView()
                     self.window.show_view(game_over_view)
-        # Check if 10 seconds have passed
-        if self.time_elapsed >= constant.ENEMY_SPAWN_INTERVAL:
-            # Spawn a new enemy
-            self.spawn_enemy()
-            # Reset the timer
-            self.time_elapsed = 0
+
 
         if self.enemy_trapezoid.check_trapezoid_empty():
             self.enemy_trapezoid.populate_rows([4, 8, 10])
