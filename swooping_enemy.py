@@ -3,6 +3,9 @@ import math
 import constant
 
 
+BULLET_SPEED = 3
+
+
 class Swooping_Enemy(arcade.Sprite):
     """Enemy class to populate the enemies in a swooping motion every two seconds for now.
     Will potentially update as we count time game has gone on for/to make grid more rigid instead of random."""
@@ -25,33 +28,30 @@ class Swooping_Enemy(arcade.Sprite):
         self.target_y = None
 
         # initialize a timer for the enemy swoop motion
-
         self.swoop_timer = 0  
+        self.frame_count = 0
+        self.enemy_bullet_list = arcade.SpriteList()
 
         # initialize boolean for the enemy's attack status
         self.is_attacking = False
-
-        self.bullet_fired = 0
-        self.enemy_bullet_list = arcade.SpriteList()
 
 
         #TODO: spawnmove()
 
     def setup(self):
         self.enemy_bullet_list = arcade.SpriteList()
+        self.enemy_list = arcade.SpriteList()
+        self.player_list = arcade.SpriteList()
 
-    def attack(self, player_x, player_y):
+    def attack(self, enemy, player_x, player_y):
         """Set the enemy to swoop down and shoot bullets."""
         self.is_attacking = True
+        self.frame_count = 0
+        self.swoop_timer = 0
         self.target_x = player_x
         self.target_y = player_y
-        self.swoop_timer = 0
-
-        # Fire three bullets during attack
-        for _ in range(3):
-            bullet = self.fire_bullet()
-            self.enemy_bullet_list.append(bullet)
-
+        bullet = self.fire_bullet()
+        self.enemy_bullet_list.append(bullet)
 
     def swoop_into_position(self):
         #swoop the enemy into position over the course of two seconds
@@ -81,37 +81,45 @@ class Swooping_Enemy(arcade.Sprite):
         bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
         bullet.center_x = self.center_x
         bullet.center_y = self.center_y
-        angle = math.atan2(self.target_y - self.center_y, self.target_x - self.center_x)
-        bullet.change_x = math.cos(angle) * constant.BULLET_SPEED
-        bullet.change_y = math.sin(angle) * constant.BULLET_SPEED
+        bullet.angle = math.atan2(self.target_y - self.center_y, self.target_x - self.center_x)
+        bullet.change_x = math.cos(bullet.angle) * constant.BULLET_SPEED
+        bullet.change_y = math.sin(bullet.angle) * constant.BULLET_SPEED
         return bullet
     
     def on_draw(self):
+        arcade.start_render()
         self.enemy_bullet_list.draw()
 
     def update_attack_timer(self, delta_time):
         """Increment attack timer by delta_time."""
         self.swoop_timer += delta_time 
 
-    def update(self, delta_time, player_x=None, player_y=None, bullet_list=None):
+    def update(self, delta_time, enemy, player_x=None, player_y=None, bullet_list=None):
         """Update the enemy's movement and shooting behavior."""
         if self.is_attacking:
+            self.frame_count += 1
             # Calculate Bézier curve points for a smooth swoop
             control_x = (self.start_x + self.target_x) / 2
             control_y = max(self.start_y, self.target_y) + 150  # control point above player
 
             # Quadratic Bézier parameter t, from 0 to 1 over 2 seconds
-            t = min(self.swoop_timer / 3.5, 1)
-            self.center_x = (1 - t)**2 * self.start_x + 2 * (1 - t) * t * control_x + t**2 * self.target_x
-            self.center_y = (1 - t)**2 * self.start_y + 2 * (1 - t) * t * control_y + t**2 * self.target_y
+            t = min(self.swoop_timer / 8, 1)
+            self.center_x = (1 - t)**2 * self.start_x + 2 * (1 - t) * t * control_x + t**8 * self.target_x
+            self.center_y = (1 - t)**2 * self.start_y + 2 * (1 - t) * t * control_y + t**8 * self.target_y
 
-            if self.swoop_timer > 1:  # Fire bullets after 1 second
-                bullet = self.fire_bullet()
-                self.enemy_bullet_list.append(bullet)  # Add bullet to the central bullet list
-            
             # Increment swoop timer
             self.swoop_timer += delta_time
 
+            if self.frame_count % 60 == 0:  # Fire bullets after 1 second
+                print("test")
+                print(len(self.enemy_bullet_list))
+                
+                bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
+                bullet.center_x = self.center_x  # Spawn bullet at enemy's current position
+                bullet.center_y = self.center_y  # Spawn bullet at enemy's current position
+                bullet.change_y = -BULLET_SPEED  # Move bullet straight down
+                self.enemy_bullet_list.append(bullet)
+            
             # Check if reached target or left screen
             if t >= 1 or self.center_y < 0:
                 # Reset after swoop ends
@@ -124,9 +132,6 @@ class Swooping_Enemy(arcade.Sprite):
 
         # Update bullets and remove off-screen bullets
         self.enemy_bullet_list.update()
-        for bullet in self.enemy_bullet_list:
-            if bullet.bottom < 0:  # if the bullet goes off-screen
-                bullet.remove_from_sprite_lists()
 
 
         
