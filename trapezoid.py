@@ -68,7 +68,8 @@ class Trapezoid():
         
 
     def check_trapezoid_empty(self):
-        return len(self.enemies_nested_list) > 0
+        return len(self.trapezoid_sprites) > 0
+
     def draw(self):
         """Draw all rows of enemies."""
         self.trapezoid_sprites.draw()
