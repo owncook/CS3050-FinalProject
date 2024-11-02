@@ -15,7 +15,7 @@ class Trapezoid():
         self.attack_timer = 0  # Track time for attacks
 
         # Populate rows with enemies
-        self.populate_rows([2, 2, 2])
+        self.populate_rows([4, 8, 10])
 
     # Helper function for populate rows
     def populate_row(self, num_enemies, enemy_type, home_y):
