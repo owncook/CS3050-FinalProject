@@ -4,8 +4,7 @@ import arcade.key
 import constant
 import math
 from trapezoid import Trapezoid
-from star import Star 
-
+from star import Star
 
 
 class StartView(arcade.View):
@@ -23,7 +22,7 @@ class StartView(arcade.View):
         # I am adding stars to ours via a list of random coordinates.
         self.star_list = []
         # Generate star positions
-        for _ in range(50): # Adjust the passed range to change the amount of stars
+        for _ in range(50):  # Adjust the passed range to change the amount of stars
             x = random.randint(0, constant.SCREEN_WIDTH)
             y = random.randint(0, constant.SCREEN_HEIGHT)
             self.star_list.append((x, y))
@@ -35,7 +34,7 @@ class StartView(arcade.View):
         for star in self.star_list:
             x, y = star
             arcade.draw_circle_filled(x, y, 2, arcade.color.WHITE)
-    
+
         # Setting variables used in the drawing of start screen
         text = "GALAGA"
         text_x = constant.SCREEN_WIDTH // 2
@@ -44,16 +43,20 @@ class StartView(arcade.View):
         fill_color = arcade.color.GREEN
 
         # To create an outline effect, draw GALAGA slightly offset in all 4 directions in red
-        arcade.draw_text(text, text_x - 2, text_y - 2, outline_color, font_size=50, anchor_x="center", anchor_y="center")
-        arcade.draw_text(text, text_x + 2, text_y - 2, outline_color, font_size=50, anchor_x="center", anchor_y="center")
-        arcade.draw_text(text, text_x - 2, text_y + 2, outline_color, font_size=50, anchor_x="center", anchor_y="center")
-        arcade.draw_text(text, text_x + 2, text_y + 2, outline_color, font_size=50, anchor_x="center", anchor_y="center")
+        arcade.draw_text(text, text_x - 2, text_y - 2, outline_color, font_size=50, anchor_x="center",
+                         anchor_y="center")
+        arcade.draw_text(text, text_x + 2, text_y - 2, outline_color, font_size=50, anchor_x="center",
+                         anchor_y="center")
+        arcade.draw_text(text, text_x - 2, text_y + 2, outline_color, font_size=50, anchor_x="center",
+                         anchor_y="center")
+        arcade.draw_text(text, text_x + 2, text_y + 2, outline_color, font_size=50, anchor_x="center",
+                         anchor_y="center")
 
         # Draw the main text on top in green
         arcade.draw_text(text, text_x, text_y, fill_color, font_size=50, anchor_x="center", anchor_y="center")
 
-        #Advance to game instruction
-        arcade.draw_text("Click to advance", self.window.width / 2, self.window.height / 2-75,
+        # Advance to game instruction
+        arcade.draw_text("Click to advance", self.window.width / 2, self.window.height / 2 - 75,
                          arcade.color.WHITE, font_size=20, anchor_x="center")
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
@@ -61,6 +64,7 @@ class StartView(arcade.View):
         game_view = GameView()
         game_view.setup()
         self.window.show_view(game_view)
+
 
 class PauseView(arcade.View):
     def __init__(self, game_view):
@@ -97,9 +101,8 @@ class PauseView(arcade.View):
                          font_size=20,
                          anchor_x="center")
 
-
     def on_key_press(self, key, _modifiers):
-        if key == arcade.key.ESCAPE:   # resume game
+        if key == arcade.key.ESCAPE:  # resume game
             arcade.set_background_color(arcade.color.BLACK)
             self.window.show_view(self.game_view)
 
@@ -135,22 +138,21 @@ class GameView(arcade.View):
     def __init__(self):
         # Initialize the game window
         super().__init__()
-        
+
         # Set background color
         arcade.set_background_color(arcade.color.BLACK)
         # Set up star positions
         self.star_list = []
-        
+
         # Initialize variables for the player, enemies, bullets, etc.
         self.player_sprite = None
         self.test_enemy = None
         self.enemy_list = None
         self.bullet_list = None
-        
+
         self.score = 0
         self.time_elapsed = 0  # Track time for enemy spawning
-        self.pressed_keys = set() # List to track movement keys pressed
-
+        self.pressed_keys = set()  # List to track movement keys pressed
 
         # Sounds
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
@@ -164,19 +166,16 @@ class GameView(arcade.View):
         self.shoot_timer = .1
         self.shoot_interval = .01
 
-        #Trapezoid
+        # Trapezoid
         self.enemy_trapezoid = Trapezoid()
-        
-        
 
-        
     def setup(self):
         """Set up the game variables and objects"""
         # Initialize player sprite and sprite lists
         self.player_sprite = arcade.Sprite("sources/player.png", scale=constant.PLAYER_SCALE)
         self.player_sprite.center_x = constant.SCREEN_WIDTH // 2
         self.player_sprite.center_y = 50
-        
+
         # Initialize sprite lists
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
@@ -190,7 +189,6 @@ class GameView(arcade.View):
             star = Star()
             self.star_list.append(star)
 
-        
     # def enemy_shoot(self): TODO:remove
     #     """Handle shooting bullets from enemies."""
     #     for enemy in self.enemy_list:
@@ -201,8 +199,6 @@ class GameView(arcade.View):
     #         bullet.angle = 270  #downwards is 270 degrees
     #         bullet.change_y = -constant.BULLET_SPEED  # Moving down
     #         self.enemy_bullet_list.append(bullet)
-        
-
 
     def on_draw(self):
         """Render the screen"""
@@ -212,18 +208,20 @@ class GameView(arcade.View):
             star.draw()
         # Draw the player
         self.player_sprite.draw()
-        
+
         # Draw enemies and bullets
         self.enemy_list.draw()
         self.bullet_list.draw()
         # self.enemy_bullet_list.draw() TODO remove
 
-         # Draw the trapezoid
-        self.enemy_trapezoid.draw() 
+        # Draw the trapezoid
+        self.enemy_trapezoid.draw()
 
         # Put the text on the screen.
         output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        output = f"Lives: {self.lives}"
+        arcade.draw_text(output, 90, 20, arcade.color.WHITE, 14)
 
     def on_key_press(self, key, modifiers):
         """Handle key press events"""
@@ -249,7 +247,6 @@ class GameView(arcade.View):
             bullet.bottom = self.player_sprite.top
 
             self.bullet_list.append(bullet)
-
 
     def on_key_release(self, key, modifiers):
         """Handle key release events"""
@@ -279,11 +276,9 @@ class GameView(arcade.View):
         self.frame_count += 1
         self.time_elapsed += delta_time
 
-
         # Update bullets and check for collisions
         self.bullet_list.update()
         # self.enemy_bullet_list.update() TODO remove
-       
 
         # Keep the player on the screen
         if self.player_sprite.left < 0:
@@ -291,20 +286,29 @@ class GameView(arcade.View):
         elif self.player_sprite.right > constant.SCREEN_WIDTH:
             self.player_sprite.right = constant.SCREEN_WIDTH
 
-
-         # Update enemies
+        # Update enemies
         for enemy in self.enemy_list:
             enemy.update(delta_time)  # Call the enemy's update method
 
-        #  # Handle collision detection and life reduction
+        # Handle collision detection and life reduction
         for enemy_bullet in self.enemy_trapezoid.enemy_bullet_list:
             if arcade.check_for_collision(enemy_bullet, self.player_sprite):
                 enemy_bullet.remove_from_sprite_lists()
                 self.lives -= 1
+                print("Lives: " + str(self.lives))
                 if self.lives <= 0:
                     game_over_view = GameOverView()
                     self.window.show_view(game_over_view)
 
+        for enemy in self.enemy_trapezoid.trapezoid_sprites:
+            if arcade.check_for_collision(enemy, self.player_sprite):
+                enemy.remove_from_sprite_lists()
+                self.lives -= 1
+                # print("Lives: " + str(self.lives))
+                # Check if lives reach zero
+                if self.lives <= 0:
+                    game_over_view = GameOverView()
+                    self.window.show_view(game_over_view)
 
         if self.enemy_trapezoid.check_trapezoid_empty():
             self.enemy_trapezoid.populate_rows([4, 8, 10])
@@ -330,7 +334,6 @@ class GameView(arcade.View):
         # Update stars to appear as scrolling
         for star in self.star_list:
             star.update()
-
 
 
 def main():
