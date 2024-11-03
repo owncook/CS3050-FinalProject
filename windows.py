@@ -146,7 +146,7 @@ class GameView(arcade.View):
         self.test_enemy = None
         self.enemy_list = None
         self.bullet_list = None
-        self.enemy_bullet_list = None
+        
         self.score = 0
         self.time_elapsed = 0  # Track time for enemy spawning
         self.pressed_keys = set() # List to track movement keys pressed
@@ -180,20 +180,10 @@ class GameView(arcade.View):
         # Initialize sprite lists
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
-        self.enemy_bullet_list = arcade.SpriteList()
+        # self.enemy_bullet_list = arcade.SpriteList() TODO remove
         # Score
         self.score = 0
         self.lives = 3
-
-        # # Enemies (testing for now)
-        # self.test_enemy = arcade.Sprite("sources/enemies/json.jpeg", scale=1)
-        # self.test_enemy.center_x = SCREEN_WIDTH // 2
-        # self.test_enemy.center_y = SCREEN_HEIGHT // 2
-        # self.enemy_list.append(self.test_enemy)
-        # self.time_elapsed = 0
-
-        # self.spawn_enemy()  # Initial enemy spawn
-       
 
         # Setup stars
         for _ in range(constant.STAR_COUNT):
@@ -201,15 +191,16 @@ class GameView(arcade.View):
             self.star_list.append(star)
 
         
-    def enemy_shoot(self):
-        """Handle shooting bullets from enemies."""
-        for enemy in self.enemy_list:
-            bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
-            bullet.center_x = enemy.center_x
-            bullet.center_y = enemy.top  # Start the bullet just above the enemy
-            bullet.angle = 270  # Assuming downwards is 270 degrees
-            bullet.change_y = -constant.BULLET_SPEED  # Moving down
-            self.enemy_bullet_list.append(bullet)
+    # def enemy_shoot(self): TODO:remove
+    #     """Handle shooting bullets from enemies."""
+    #     for enemy in self.enemy_list:
+    #         bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
+    #         print("tester")
+    #         bullet.center_x = enemy.center_x
+    #         bullet.center_y = enemy.top  # Start the bullet just above the enemy
+    #         bullet.angle = 270  #downwards is 270 degrees
+    #         bullet.change_y = -constant.BULLET_SPEED  # Moving down
+    #         self.enemy_bullet_list.append(bullet)
         
 
 
@@ -225,7 +216,7 @@ class GameView(arcade.View):
         # Draw enemies and bullets
         self.enemy_list.draw()
         self.bullet_list.draw()
-        self.enemy_bullet_list.draw()
+        # self.enemy_bullet_list.draw() TODO remove
 
          # Draw the trapezoid
         self.enemy_trapezoid.draw() 
@@ -283,7 +274,7 @@ class GameView(arcade.View):
         self.player_sprite.update()
         self.bullet_list.update()
         self.enemy_list.update()
-        self.enemy_bullet_list.update()
+        self.enemy_trapezoid.enemy_bullet_list.update()
         self.enemy_trapezoid.update(delta_time, self.player_sprite.center_x, self.player_sprite.center_y)
         self.frame_count += 1
         self.time_elapsed += delta_time
@@ -291,7 +282,7 @@ class GameView(arcade.View):
 
         # Update bullets and check for collisions
         self.bullet_list.update()
-        self.enemy_bullet_list.update()
+        # self.enemy_bullet_list.update() TODO remove
        
 
         # Keep the player on the screen
@@ -300,23 +291,13 @@ class GameView(arcade.View):
         elif self.player_sprite.right > constant.SCREEN_WIDTH:
             self.player_sprite.right = constant.SCREEN_WIDTH
 
-        # Update shoot timer
-        self.shoot_timer += delta_time
-        if self.shoot_timer >= self.shoot_interval:
-            # Fire a bullet and reset the timer
-            self.enemy_shoot()  # Or call the method that adds bullets to the list
-            self.shoot_timer = 0  # Reset the shoot timer
 
          # Update enemies
         for enemy in self.enemy_list:
             enemy.update(delta_time)  # Call the enemy's update method
 
-        # Update stars to appear as scrolling
-        for star in self.star_list:
-            star.update()
-
-         # Handle collision detection and life reduction
-        for enemy_bullet in self.enemy_bullet_list:
+        #  # Handle collision detection and life reduction
+        for enemy_bullet in self.enemy_trapezoid.enemy_bullet_list:
             if arcade.check_for_collision(enemy_bullet, self.player_sprite):
                 enemy_bullet.remove_from_sprite_lists()
                 self.lives -= 1
@@ -345,6 +326,10 @@ class GameView(arcade.View):
 
                 if bullet.bottom > constant.SCREEN_HEIGHT:
                     bullet.remove_from_sprite_lists()
+
+        # Update stars to appear as scrolling
+        for star in self.star_list:
+            star.update()
 
 
 
