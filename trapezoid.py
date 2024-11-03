@@ -12,7 +12,9 @@ class Trapezoid():
         # Initialize SpriteLists for each row
         self.trapezoid_sprites = arcade.SpriteList()
 
-        self.attack_timer = 0  # Track time for attacks
+        self.attack_timer = 0  # Track time for attacks\
+
+        self.enemy_bullet_list = arcade.SpriteList()
 
         # Populate rows with enemies
         self.populate_rows([4, 8, 10])
@@ -61,7 +63,6 @@ class Trapezoid():
         num_butterflies = enemies_per_row[1]
         num_bees = enemies_per_row[2]
 
-        #TODO: add a pause between row populating the screen
 
         home_y = constant.SCREEN_HEIGHT - constant.MARGIN_Y
         self.populate_row(num_boss, 'json', home_y)
@@ -80,17 +81,33 @@ class Trapezoid():
     def draw(self):
         """Draw all rows of enemies."""
         self.trapezoid_sprites.draw()
+        self.enemy_bullet_list.draw()
 
     def update(self, delta_time, player_x, player_y):
         """Update all rows of enemies."""
 
         self.attack_timer += delta_time
-        if self.attack_timer >= constant.ATTACK_INTERVAL:
 
+        if self.attack_timer >= constant.ATTACK_INTERVAL:
+            
             enemy = random.choice(self.trapezoid_sprites)
             enemy.update_attack_timer(delta_time)  # Increment the attack timer
             enemy.attack(enemy, player_x, player_y)      # Call the attack method
+
+            self.attack_timer += delta_time
+         
+            if enemy.is_attacking:
+                bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
+                print("tester")
+                bullet.center_x = enemy.center_x                
+                bullet.center_y = enemy.top  # Start the bullet just above the enemy  
+                bullet.angle = 180  #downwards is 270 degrees
+                bullet.change_y = -constant.BULLET_SPEED  # Moving down
+                self.enemy_bullet_list.append(bullet)
+         
             self.attack_timer = 0
+        
+
 
 
         for enemy in self.trapezoid_sprites:

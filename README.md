@@ -1,4 +1,4 @@
-# CS3050 Group 3 FinalProject: Galaga
+# CS3050 Group 3 Final Project: Galaga
 
 ### Introduction
 
