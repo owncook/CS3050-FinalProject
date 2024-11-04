@@ -237,7 +237,7 @@ class GameView(arcade.View):
             # pass self, the current view, to preserve this view's state
             pause = PauseView(self)
             self.window.show_view(pause)
-        elif key == arcade.key.SPACE and len(self.bullet_list) < 2:
+        elif key == arcade.key.SPACE and len(self.bullet_list) < constant.MAX_BULLETS:
             arcade.play_sound(self.gun_sound)
             bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=1)
 

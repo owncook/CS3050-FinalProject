@@ -8,6 +8,7 @@ SCREEN_TITLE = "Galaga Game Window"
 # --- Player ---
 PLAYER_SCALE = .075
 BULLET_SPEED = 10
+MAX_BULLETS = 2
 
 # --- Enemies --- 
 ENEMY_SCALE = 0.25
