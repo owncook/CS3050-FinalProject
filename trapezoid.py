@@ -48,7 +48,7 @@ class Trapezoid():
             right_sprite.start_delay = group_delay
 
             # Increase delay for the next group
-            group_delay += 1 
+            group_delay += 1
 
 
             self.trapezoid_sprites.append(left_sprite)

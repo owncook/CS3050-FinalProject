@@ -72,7 +72,7 @@ class Swooping_Enemy(arcade.Sprite):
 
     
 
-    def update_attack_timer(self, delta_time):
+    def update_swoop_timer(self, delta_time):
         """Increment attack timer by delta_time."""
         self.swoop_timer += delta_time 
 
@@ -85,12 +85,10 @@ class Swooping_Enemy(arcade.Sprite):
             control_y = max(self.home_y, self.target_y) + 150  # control point above player
 
             # Quadratic Bézier parameter t, from 0 to 1 over 2 seconds
-            t = min(self.swoop_timer / 8, 1)
-            self.center_x = (1 - t)**2 * self.home_x + 2 * (1 - t) * t * control_x + t**8 * self.target_x
-            self.center_y = (1 - t)**2 * self.home_y + 2 * (1 - t) * t * control_y + t**8 * self.target_y
+            t = min(self.swoop_timer / 2, 1)
+            self.center_x = (1 - t)**2 * self.home_x + 2 * (1 - t) * t * control_x + t**2 * self.target_x
+            self.center_y = (1 - t)**2 * self.home_y + 2 * (1 - t) * t * control_y + t**2 * self.target_y
 
-            # Increment swoop timer
-            self.swoop_timer += delta_time
 
             # if self.frame_count % 60 == 0:  # Fire bullets after 1 second TODO: remove
             #     print("test")
