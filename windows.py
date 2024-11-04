@@ -113,23 +113,55 @@ class GameOverView(arcade.View):
     def __init__(self):
         """ This is run once when we switch to this view """
         super().__init__()
-        self.texture = arcade.load_texture("sources/game_over.png")
+        # self.texture = arcade.load_texture("sources/game_over.png")
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
         arcade.set_viewport(0, constant.SCREEN_WIDTH - 1, 0, constant.SCREEN_HEIGHT - 1)
+        self.star_list = []
+
+    def setup(self):
+        for _ in range(constant.STAR_COUNT):
+            star = Star()
+            self.star_list.append(star)
 
     def on_draw(self):
         """ Draw this view """
         self.clear()
-        self.texture.draw_sized(constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2,
-                                constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
+        # self.texture.draw_sized(constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2,
+        # constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
+        text = "GAME OVER"
+        text_x = constant.SCREEN_WIDTH // 2
+        text_y = constant.SCREEN_HEIGHT // 1.75
+        outline_color = arcade.color.RED
+        fill_color = arcade.color.DARK_RED
+        for star in self.star_list:
+            star.draw()
+
+        # To create an outline effect, draw GALAGA slightly offset in all 4 directions in red
+        arcade.draw_text(text, text_x - 2, text_y - 2, outline_color, font_size=50, anchor_x="center",
+                         anchor_y="center")
+        arcade.draw_text(text, text_x + 2, text_y - 2, outline_color, font_size=50, anchor_x="center",
+                         anchor_y="center")
+        arcade.draw_text(text, text_x - 2, text_y + 2, outline_color, font_size=50, anchor_x="center",
+                         anchor_y="center")
+        arcade.draw_text(text, text_x + 2, text_y + 2, outline_color, font_size=50, anchor_x="center",
+                         anchor_y="center")
+
+        # Draw the main text on top in green
+        arcade.draw_text(text, text_x, text_y, fill_color, font_size=50, anchor_x="center", anchor_y="center")
+        arcade.draw_text("Click to play again", self.window.width / 2, self.window.height / 2 - 200,
+                         arcade.color.RED, font_size=30, anchor_x="center")
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ If the user presses the mouse button, re-start the game. """
         game_view = GameView()
         game_view.setup()
         self.window.show_view(game_view)
+
+    def on_update(self, delta_time):
+        for star in self.star_list:
+            star.update()
 
 
 class GameView(arcade.View):
