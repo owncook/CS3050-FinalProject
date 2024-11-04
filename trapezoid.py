@@ -91,7 +91,7 @@ class Trapezoid():
         if self.attack_timer >= constant.ATTACK_INTERVAL:
             
             enemy = random.choice(self.trapezoid_sprites)
-            enemy.update_attack_timer(delta_time)  # Increment the attack timer
+            enemy.update_swoop_timer(delta_time)  # Increment the attack timer
             enemy.attack(enemy, player_x, player_y)      # Call the attack method
 
             self.attack_timer += delta_time
@@ -111,5 +111,5 @@ class Trapezoid():
 
 
         for enemy in self.trapezoid_sprites:
-            enemy.update_attack_timer(delta_time)  # Increment attack timer for each enemy
+            enemy.update_swoop_timer(delta_time)  # Increment attack timer for each enemy
             enemy.update(delta_time, player_x, player_y)  # Update each enemy
