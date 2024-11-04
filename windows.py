@@ -237,7 +237,7 @@ class GameView(arcade.View):
             # pass self, the current view, to preserve this view's state
             pause = PauseView(self)
             self.window.show_view(pause)
-        elif key == arcade.key.SPACE:
+        elif key == arcade.key.SPACE and len(self.bullet_list) < 2:
             arcade.play_sound(self.gun_sound)
             bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=1)
 
@@ -324,8 +324,8 @@ class GameView(arcade.View):
 
                 arcade.play_sound(self.hit_sound)
 
-                if bullet.bottom > constant.SCREEN_HEIGHT:
-                    bullet.remove_from_sprite_lists()
+            if bullet.bottom > constant.SCREEN_HEIGHT:
+                bullet.remove_from_sprite_lists()
 
         # Update stars to appear as scrolling
         for star in self.star_list:
