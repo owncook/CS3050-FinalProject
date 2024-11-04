@@ -113,7 +113,7 @@ class GameOverView(arcade.View):
     def __init__(self):
         """ This is run once when we switch to this view """
         super().__init__()
-        self.texture = arcade.load_texture("game_over.png")
+        self.texture = arcade.load_texture("sources/game_over.png")
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
@@ -235,7 +235,7 @@ class GameView(arcade.View):
             # pass self, the current view, to preserve this view's state
             pause = PauseView(self)
             self.window.show_view(pause)
-        elif key == arcade.key.SPACE:
+        elif key == arcade.key.SPACE and len(self.bullet_list) < constant.MAX_BULLETS:
             arcade.play_sound(self.gun_sound)
             bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=1)
 
@@ -328,8 +328,8 @@ class GameView(arcade.View):
 
                 arcade.play_sound(self.hit_sound)
 
-                if bullet.bottom > constant.SCREEN_HEIGHT:
-                    bullet.remove_from_sprite_lists()
+            if bullet.bottom > constant.SCREEN_HEIGHT:
+                bullet.remove_from_sprite_lists()
 
         # Update stars to appear as scrolling
         for star in self.star_list:
