@@ -5,6 +5,7 @@ import constant
 import math
 from trapezoid import Trapezoid
 from star import Star
+arcade.load_font("sources/fonts/emulogic-font/Emulogic-zrEw.ttf")
 
 
 class StartView(arcade.View):
@@ -119,37 +120,22 @@ class GameOverView(arcade.View):
         # to reset the viewport back to the start so we can see what we draw.
         arcade.set_viewport(0, constant.SCREEN_WIDTH - 1, 0, constant.SCREEN_HEIGHT - 1)
         self.star_list = []
-
-    def setup(self):
-        for _ in range(constant.STAR_COUNT):
-            star = Star()
-            self.star_list.append(star)
+        # Generate star positions
+        for _ in range(50):  # Adjust the passed range to change the amount of stars
+            x = random.randint(0, constant.SCREEN_WIDTH)
+            y = random.randint(0, constant.SCREEN_HEIGHT)
+            self.star_list.append((x, y))
 
     def on_draw(self):
         """ Draw this view """
         self.clear()
+        for star in self.star_list:
+            x, y = star
+            arcade.draw_circle_filled(x, y, 2, arcade.color.WHITE)
         # self.texture.draw_sized(constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2,
         # constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
-        text = "GAME OVER"
-        text_x = constant.SCREEN_WIDTH // 2
-        text_y = constant.SCREEN_HEIGHT // 1.75
-        outline_color = arcade.color.RED
-        fill_color = arcade.color.DARK_RED
-        for star in self.star_list:
-            star.draw()
+        arcade.draw_text("GAME OVER", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.75, arcade.color.RED, 50, anchor_x="center", anchor_y="center", font_name="Emulogic")
 
-        # To create an outline effect, draw GALAGA slightly offset in all 4 directions in red
-        arcade.draw_text(text, text_x - 2, text_y - 2, outline_color, font_size=50, anchor_x="center",
-                         anchor_y="center")
-        arcade.draw_text(text, text_x + 2, text_y - 2, outline_color, font_size=50, anchor_x="center",
-                         anchor_y="center")
-        arcade.draw_text(text, text_x - 2, text_y + 2, outline_color, font_size=50, anchor_x="center",
-                         anchor_y="center")
-        arcade.draw_text(text, text_x + 2, text_y + 2, outline_color, font_size=50, anchor_x="center",
-                         anchor_y="center")
-
-        # Draw the main text on top in green
-        arcade.draw_text(text, text_x, text_y, fill_color, font_size=50, anchor_x="center", anchor_y="center")
         arcade.draw_text("Click to play again", self.window.width / 2, self.window.height / 2 - 200,
                          arcade.color.RED, font_size=30, anchor_x="center")
 
@@ -159,9 +145,6 @@ class GameOverView(arcade.View):
         game_view.setup()
         self.window.show_view(game_view)
 
-    def on_update(self, delta_time):
-        for star in self.star_list:
-            star.update()
 
 
 class GameView(arcade.View):
