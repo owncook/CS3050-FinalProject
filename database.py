@@ -1,10 +1,18 @@
 from config_firestore import db, firestore
 import constant
 
+
+# Creates a score 'document' in the firestore database
+# username: name inputted by user
+# score: score of user
 def load_database(username, score):
     doc_ref = db.collection('scores').document(username)
     doc_ref.set({'score' : score})
 
+# Gets top 5 scores from database
+# returns: list of tuples where
+# tuple[0] is username
+# tuple[1] is score
 def query_database():
     top_scores = []
 
