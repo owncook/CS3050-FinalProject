@@ -1,5 +1,5 @@
 import arcade
-import math
+import time
 import constant
 import random
 from swooping_enemy import Swooping_Enemy
@@ -13,6 +13,8 @@ class Trapezoid():
         self.trapezoid_sprites = arcade.SpriteList()
 
         self.attack_timer = 0  # Track time for attacks\
+
+        self.selected_enemy  = None
 
         self.enemy_bullet_list = arcade.SpriteList()
 
@@ -47,7 +49,6 @@ class Trapezoid():
             left_sprite.start_delay = group_delay
             right_sprite.start_delay = group_delay
 
-            # Increase delay for the next group
             group_delay += 1
 
 
@@ -83,33 +84,42 @@ class Trapezoid():
         self.trapezoid_sprites.draw()
         self.enemy_bullet_list.draw()
 
+
     def update(self, delta_time, player_x, player_y):
         """Update all rows of enemies."""
 
         self.attack_timer += delta_time
+        
 
         if self.attack_timer >= constant.ATTACK_INTERVAL:
             
-            enemy = random.choice(self.trapezoid_sprites)
-            enemy.update_swoop_timer(delta_time)  # Increment the attack timer
-            enemy.attack(enemy, player_x, player_y)      # Call the attack method
-
-            self.attack_timer += delta_time
-         
-            if enemy.is_attacking:
-                bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
-                print("tester")
-                bullet.center_x = enemy.center_x                
-                bullet.center_y = enemy.top  # Start the bullet just above the enemy  
-                bullet.angle = 180  #downwards is 270 degrees
-                bullet.change_y = -constant.BULLET_SPEED  # Moving down
-                self.enemy_bullet_list.append(bullet)
-         
+            self.selected_enemy = random.choice(self.trapezoid_sprites)
+            self.selected_enemy.bullet_shot = False
+            self.selected_enemy.attack(self.selected_enemy, player_x, player_y)      # Call the attack method
             self.attack_timer = 0
-        
 
+        if self.selected_enemy and not self.selected_enemy.bullet_shot:
+            self.fire_bullet(self.selected_enemy)
 
+         
 
         for enemy in self.trapezoid_sprites:
             enemy.update_swoop_timer(delta_time)  # Increment attack timer for each enemy
             enemy.update(delta_time, player_x, player_y)  # Update each enemy
+
+
+    def fire_bullet(self, enemy):
+        "A helper function responsible for the firing of the bullet which is called from update"
+        if(time.time() - enemy.attack_bullet_timer) > 1.5 and enemy.bullet_shot == False:
+
+            bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
+            print("tester")
+            bullet.center_x = enemy.center_x                
+            bullet.center_y = enemy.top  # Start the bullet just above the enemy  
+            bullet.angle = 180  #downwards is 270 degrees
+            bullet.change_y = -constant.ENEMY_BULLET_SPEED  # Moving down
+            self.enemy_bullet_list.append(bullet)
+
+            self.selected_enemy.bullet_shot = True
+            
+

@@ -194,7 +194,7 @@ class GameView(arcade.View):
         # Initialize sprite lists
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
-        # self.enemy_bullet_list = arcade.SpriteList() TODO remove
+
         # Score
         self.score = 0
         self.lives = 3
@@ -204,16 +204,6 @@ class GameView(arcade.View):
             star = Star()
             self.star_list.append(star)
 
-    # def enemy_shoot(self): TODO:remove
-    #     """Handle shooting bullets from enemies."""
-    #     for enemy in self.enemy_list:
-    #         bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
-    #         print("tester")
-    #         bullet.center_x = enemy.center_x
-    #         bullet.center_y = enemy.top  # Start the bullet just above the enemy
-    #         bullet.angle = 270  #downwards is 270 degrees
-    #         bullet.change_y = -constant.BULLET_SPEED  # Moving down
-    #         self.enemy_bullet_list.append(bullet)
 
     def on_draw(self):
         """Render the screen"""
@@ -227,7 +217,6 @@ class GameView(arcade.View):
         # Draw enemies and bullets
         self.enemy_list.draw()
         self.bullet_list.draw()
-        # self.enemy_bullet_list.draw() TODO remove
 
         # Draw the trapezoid
         self.enemy_trapezoid.draw()
@@ -293,7 +282,6 @@ class GameView(arcade.View):
 
         # Update bullets and check for collisions
         self.bullet_list.update()
-        # self.enemy_bullet_list.update() TODO remove
 
         # Keep the player on the screen
         if self.player_sprite.left < 0:
@@ -301,9 +289,6 @@ class GameView(arcade.View):
         elif self.player_sprite.right > constant.SCREEN_WIDTH:
             self.player_sprite.right = constant.SCREEN_WIDTH
 
-        # Update enemies
-        for enemy in self.enemy_list:
-            enemy.update(delta_time)  # Call the enemy's update method
 
         # Handle collision detection and life reduction
         for enemy_bullet in self.enemy_trapezoid.enemy_bullet_list:
