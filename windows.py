@@ -2,10 +2,12 @@ import random
 import arcade
 import arcade.key
 import constant
+from constant import *
 import math
 from trapezoid import Trapezoid
 from star import Star
 arcade.load_font("sources/fonts/emulogic-font/Emulogic-zrEw.ttf")
+from explosions import Smoke, Particle
 
 
 class StartView(arcade.View):
@@ -172,6 +174,7 @@ class GameView(arcade.View):
         # Sounds
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
         self.hit_sound = arcade.load_sound("sources/sounds/wilhelm.wav")
+        self.explosions_list = None
 
         # Don't show the mouse cursor 
         self.window.set_mouse_visible(False)
@@ -194,6 +197,7 @@ class GameView(arcade.View):
         # Initialize sprite lists
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
+        self.explosions_list = arcade.SpriteList()
 
         # Score
         self.score = 0
@@ -226,6 +230,7 @@ class GameView(arcade.View):
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
         output = f"Lives: {self.lives}"
         arcade.draw_text(output, 90, 20, arcade.color.WHITE, 14)
+        self.explosions_list.draw()
 
     def on_key_press(self, key, modifiers):
         """Handle key press events"""
@@ -280,6 +285,8 @@ class GameView(arcade.View):
         self.frame_count += 1
         self.time_elapsed += delta_time
 
+        self.explosions_list.update()
+
         # Update bullets and check for collisions
         self.bullet_list.update()
 
@@ -324,6 +331,17 @@ class GameView(arcade.View):
 
             for enemy in enemies_hit:
                 enemy.remove_from_sprite_lists()
+                self.score += 1
+                # Make an explosion
+                for i in range(PARTICLE_COUNT):
+                    particle = Particle(self.explosions_list)
+                    particle.position = enemy.position
+                    self.explosions_list.append(particle)
+
+                smoke = Smoke(50)
+                smoke.position = enemy.position
+                self.explosions_list.append(smoke)
+
                 self.score += 1
 
                 arcade.play_sound(self.hit_sound)
