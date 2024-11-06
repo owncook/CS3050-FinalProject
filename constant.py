@@ -30,6 +30,9 @@ STAR_COUNT = 100
 STAR_SPEED = 2
 TWINKLE_SPEED = 0.1
 
+# --- Database ---
+NUM_HIGHSCORES = 5
+
 
 
 
