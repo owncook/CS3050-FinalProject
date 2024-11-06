@@ -1,6 +1,7 @@
 import random
 import arcade
 import arcade.key
+import arcade.gui
 import constant
 import math
 from trapezoid import Trapezoid
@@ -115,7 +116,20 @@ class GameOverView(arcade.View):
         """ This is run once when we switch to this view """
         super().__init__()
         # self.texture = arcade.load_texture("sources/game_over.png")
+        self.button_restart = arcade.gui.UIFlatButton(text="Restart Game", width=200)
+        self.button_highscore = arcade.gui.UIFlatButton(text="High Scores", width=200)
+        self.button_quit = arcade.gui.UIFlatButton(text="Quit", width=200)
+        self.ui_manager = arcade.gui.UIManager()
 
+        # Add buttons to the UI manager
+        self.ui_manager.add(self.button_restart)
+        self.ui_manager.add(self.button_highscore)
+        self.ui_manager.add(self.button_quit)
+
+        # Set the button actions
+        self.button_restart.on_click = self.restart_game
+        self.button_highscore.on_click = self.show_high_scores
+        self.button_quit.on_click = self.quit_program
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
         arcade.set_viewport(0, constant.SCREEN_WIDTH - 1, 0, constant.SCREEN_HEIGHT - 1)
@@ -126,9 +140,38 @@ class GameOverView(arcade.View):
             y = random.randint(0, constant.SCREEN_HEIGHT)
             self.star_list.append((x, y))
 
+            def on_show(self):
+                arcade.set_background_color(arcade.color.GRAY)
+
+                # Position buttons on the screen using UIAnchorWidget
+                self.ui_manager.clear()
+
+                button_spacing = 50  # Space between buttons
+
+                # Restart Button
+                restart_button = arcade.gui.UIAnchorWidget(
+                    anchor_x="center", anchor_y="center", child=self.button_restart
+                )
+                restart_button.center_y = 300
+                self.ui_manager.add(restart_button)
+
+                # High Scores Button
+                highscore_button = arcade.gui.UIAnchorWidget(
+                    anchor_x="center", anchor_y="center", child=self.button_highscore
+                )
+                highscore_button.center_y = 200
+                self.ui_manager.add(highscore_button)
+                # Quit Button
+                quit_button = arcade.gui.UIAnchorWidget(
+                    anchor_x="center", anchor_y="center", child=self.button_quit
+                )
+                quit_button.center_y = 100
+                self.ui_manager.add(quit_button)
+
     def on_draw(self):
         """ Draw this view """
         self.clear()
+        self.ui_manager.draw()
         for star in self.star_list:
             x, y = star
             arcade.draw_circle_filled(x, y, 2, arcade.color.WHITE)
@@ -138,6 +181,17 @@ class GameOverView(arcade.View):
 
         arcade.draw_text("Click to play again", self.window.width / 2, self.window.height / 2 - 200,
                          arcade.color.RED, font_size=30, anchor_x="center")
+
+    def restart_game(self, event):
+        game_view = GameView()
+        self.window.show_view(game_view)
+
+    def show_high_scores(self, event):
+        print("High scores functionality is not yet implemented.")
+
+    def quit_program(self, event):
+        arcade.close_window()
+
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ If the user presses the mouse button, re-start the game. """
