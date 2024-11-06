@@ -26,6 +26,9 @@ ENEMY_SPEED = 3
 BULLET_SPEED = 5
 ENEMY_BULLET_SPEED = 8
 
+## --- Game --- 
+SCORE = 10
+
 # --- Stars ---
 STAR_COUNT = 100
 STAR_SPEED = 2
