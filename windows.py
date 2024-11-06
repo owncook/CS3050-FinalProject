@@ -140,33 +140,6 @@ class GameOverView(arcade.View):
             y = random.randint(0, constant.SCREEN_HEIGHT)
             self.star_list.append((x, y))
 
-            def on_show(self):
-                arcade.set_background_color(arcade.color.GRAY)
-
-                # Position buttons on the screen using UIAnchorWidget
-                self.ui_manager.clear()
-
-                button_spacing = 50  # Space between buttons
-
-                # Restart Button
-                restart_button = arcade.gui.UIAnchorWidget(
-                    anchor_x="center", anchor_y="center", child=self.button_restart
-                )
-                restart_button.center_y = 300
-                self.ui_manager.add(restart_button)
-
-                # High Scores Button
-                highscore_button = arcade.gui.UIAnchorWidget(
-                    anchor_x="center", anchor_y="center", child=self.button_highscore
-                )
-                highscore_button.center_y = 200
-                self.ui_manager.add(highscore_button)
-                # Quit Button
-                quit_button = arcade.gui.UIAnchorWidget(
-                    anchor_x="center", anchor_y="center", child=self.button_quit
-                )
-                quit_button.center_y = 100
-                self.ui_manager.add(quit_button)
 
     def on_draw(self):
         """ Draw this view """
