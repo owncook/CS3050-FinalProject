@@ -2,6 +2,7 @@ import random
 import arcade
 import arcade.key
 import constant
+import database
 import math
 from trapezoid import Trapezoid
 from star import Star
