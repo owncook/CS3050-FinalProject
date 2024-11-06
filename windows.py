@@ -166,6 +166,8 @@ class GameView(arcade.View):
         self.test_enemy = None
         self.enemy_list = None
         self.bullet_list = None
+        self.lives = 3
+        self.heart_texture = arcade.load_texture('sources/heart.png')
 
         self.score = 0
         self.time_elapsed = 0  # Track time for enemy spawning
@@ -200,10 +202,12 @@ class GameView(arcade.View):
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
         self.explosions_list = arcade.SpriteList()
+        self.hearts = arcade.SpriteList()
 
         # Score
         self.score = 0
-        self.lives = 3
+
+
 
         # Setup stars
         for _ in range(constant.STAR_COUNT):
@@ -232,8 +236,11 @@ class GameView(arcade.View):
         output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
         #---Lives ---
-        output = f"Lives: {self.lives}"
-        arcade.draw_text(output, 150, 20, arcade.color.WHITE, 14)
+        for i in range(self.lives):
+            x_position = 150 + i * 30 
+            arcade.draw_texture_rectangle(x_position, 20, 40, 40, self.heart_texture)
+
+
         #---Stage ---
         output = f"Stage: {self.stage_counter}"
         arcade.draw_text(output, 900, 20, arcade.color.WHITE, 14)
