@@ -2,11 +2,13 @@ import random
 import arcade
 import arcade.key
 import constant
+from constant import *
 import database
 import math
 from trapezoid import Trapezoid
 from star import Star
 arcade.load_font("sources/fonts/emulogic-font/Emulogic-zrEw.ttf")
+from explosions import Smoke, Particle
 
 
 class StartView(arcade.View):
@@ -165,6 +167,8 @@ class GameView(arcade.View):
         self.test_enemy = None
         self.enemy_list = None
         self.bullet_list = None
+        self.lives = 3
+        self.heart_texture = arcade.load_texture('sources/heart.png')
 
         self.score = 0
         self.time_elapsed = 0  # Track time for enemy spawning
@@ -173,17 +177,20 @@ class GameView(arcade.View):
         # Sounds
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
         self.hit_sound = arcade.load_sound("sources/sounds/wilhelm.wav")
+        self.explosions_list = None
 
         # Don't show the mouse cursor 
         self.window.set_mouse_visible(False)
 
         self.frame_count = 0
 
-        self.shoot_timer = .1
-        self.shoot_interval = .01
+        #TODO unused code/delete
+        # self.shoot_timer = .1
+        # self.shoot_interval = .01
 
-        # Trapezoid
+        # Enemy trapezoid creation and tracking variables
         self.enemy_trapezoid = Trapezoid()
+        self.stage_counter = 1
 
     def setup(self):
         """Set up the game variables and objects"""
@@ -195,10 +202,13 @@ class GameView(arcade.View):
         # Initialize sprite lists
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
+        self.explosions_list = arcade.SpriteList()
+        self.hearts = arcade.SpriteList()
 
         # Score
         self.score = 0
-        self.lives = 3
+
+
 
         # Setup stars
         for _ in range(constant.STAR_COUNT):
@@ -223,10 +233,21 @@ class GameView(arcade.View):
         self.enemy_trapezoid.draw()
 
         # Put the text on the screen.
+        #---Score ---
         output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
-        output = f"Lives: {self.lives}"
-        arcade.draw_text(output, 90, 20, arcade.color.WHITE, 14)
+        #---Lives ---
+        for i in range(self.lives):
+            x_position = 150 + i * 30 
+            arcade.draw_texture_rectangle(x_position, 20, 40, 40, self.heart_texture)
+
+
+        #---Stage ---
+        output = f"Stage: {self.stage_counter}"
+        arcade.draw_text(output, 900, 20, arcade.color.WHITE, 14)
+        
+        #Draw explosions
+        self.explosions_list.draw()
 
     def on_key_press(self, key, modifiers):
         """Handle key press events"""
@@ -281,6 +302,8 @@ class GameView(arcade.View):
         self.frame_count += 1
         self.time_elapsed += delta_time
 
+        self.explosions_list.update()
+
         # Update bullets and check for collisions
         self.bullet_list.update()
 
@@ -312,12 +335,12 @@ class GameView(arcade.View):
                     self.window.show_view(game_over_view)
 
         if self.enemy_trapezoid.check_trapezoid_empty():
+            self.stage_counter += 1
             self.enemy_trapezoid.populate_rows([4, 8, 10])
 
         for bullet in self.bullet_list:
 
             enemy_list = self.enemy_trapezoid.trapezoid_sprites
-
             enemies_hit = arcade.check_for_collision_with_list(bullet, enemy_list)
 
             if (len(enemies_hit) > 0):
@@ -325,7 +348,19 @@ class GameView(arcade.View):
 
             for enemy in enemies_hit:
                 enemy.remove_from_sprite_lists()
+                self.score += constant.SCORE * (self.stage_counter/10)
+                # Make an explosion
+                for i in range(PARTICLE_COUNT):
+                    particle = Particle(self.explosions_list)
+                    particle.position = enemy.position
+                    self.explosions_list.append(particle)
+
+                smoke = Smoke(50)
+                smoke.position = enemy.position
+                self.explosions_list.append(smoke)
+
                 self.score += 1
+
 
                 arcade.play_sound(self.hit_sound)
 
@@ -336,15 +371,3 @@ class GameView(arcade.View):
         for star in self.star_list:
             star.update()
 
-
-def main():
-    """ Main function """
-
-    window = arcade.Window(constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT, constant.SCREEN_TITLE)
-    start_view = StartView()
-    window.show_view(start_view)
-    arcade.run()
-
-
-if __name__ == "__main__":
-    main()
