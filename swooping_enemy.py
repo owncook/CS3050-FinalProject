@@ -1,6 +1,7 @@
 import arcade
 import math
 import constant
+import time
 
 
 
@@ -37,6 +38,8 @@ class Swooping_Enemy(arcade.Sprite):
 
         # initialize boolean for the enemy's attack status
         self.is_attacking = False
+        self.attack_bullet_timer = 0
+        self.bullet_shot = False
 
     def setup(self):
         self.enemy_bullet_list = arcade.SpriteList()
@@ -53,6 +56,7 @@ class Swooping_Enemy(arcade.Sprite):
         self.swoop_timer = 0
         self.target_x = player_x
         self.target_y = player_y
+        self.attack_bullet_timer = time.time()
 
 
 
@@ -85,20 +89,10 @@ class Swooping_Enemy(arcade.Sprite):
             control_y = max(self.home_y, self.target_y) + 150  # control point above player
 
             # Quadratic Bézier parameter t, from 0 to 1 over 2 seconds
-            t = min(self.swoop_timer / 2, 1)
+            t = min(self.swoop_timer / 3, 1)
             self.center_x = (1 - t)**2 * self.home_x + 2 * (1 - t) * t * control_x + t**2 * self.target_x
             self.center_y = (1 - t)**2 * self.home_y + 2 * (1 - t) * t * control_y + t**2 * self.target_y
 
-
-            # if self.frame_count % 60 == 0:  # Fire bullets after 1 second TODO: remove
-            #     print("test")
-            #     print(len(self.enemy_bullet_list))
-                
-            #     bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
-            #     bullet.center_x = self.center_x  # Spawn bullet at enemy's current position
-            #     bullet.center_y = self.center_y  # Spawn bullet at enemy's current position
-            #     bullet.change_y = -constant.BULLET_SPEED  # Move bullet straight down
-            #     self.enemy_bullet_list.append(bullet)
             
             # Check if reached target or left screen
             if t >= 1 or self.center_y < 0:
