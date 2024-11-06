@@ -113,7 +113,7 @@ class Swooping_Enemy(arcade.Sprite):
                 control_y = max(self.start_y, self.target_y) + 150  
 
               
-                t = min(self.swoop_timer / 10, 1)
+                t = min(self.swoop_timer / 5, 1)
                 
                 self.center_x = (1 - t)**2 * self.start_x + 2 * (1 - t) * t * control_x + t**2 * self.target_x
                 self.center_y = (1 - t)**2 * self.start_y + 2 * (1 - t) * t * control_y + t**2 * self.target_y

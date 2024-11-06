@@ -15,6 +15,8 @@ class Trapezoid():
         self.attack_timer = 0  # Track time for attacks\
 
         self.selected_enemy  = None
+        self.selected_enemy_2 = None
+        self.selected_enemy_3 = None
 
         self.enemy_bullet_list = arcade.SpriteList()
 
@@ -89,17 +91,58 @@ class Trapezoid():
         """Update all rows of enemies."""
 
         self.attack_timer += delta_time
+        three = [1, 2, 3]
         
-
+        
         if self.attack_timer >= constant.ATTACK_INTERVAL:
-            
-            self.selected_enemy = random.choice(self.trapezoid_sprites)
-            self.selected_enemy.bullet_shot = False
-            self.selected_enemy.attack(self.selected_enemy, player_x, player_y)      # Call the attack method
-            self.attack_timer = 0
 
+            num_of_enemies = random.choice(three)
+            if num_of_enemies == 1:
+                self.selected_enemy = random.choice(self.trapezoid_sprites)
+                self.selected_enemy.bullet_shot = False
+                self.selected_enemy.attack(self.selected_enemy, player_x, player_y)      # Call the attack method
+
+            elif num_of_enemies == 2:
+                self.selected_enemy = random.choice(self.trapezoid_sprites)
+                self.selected_enemy.bullet_shot = False
+                self.selected_enemy.attack(self.selected_enemy, player_x, player_y)      # Call the attack method
+                self.selected_enemy_2 = random.choice(self.trapezoid_sprites)
+                self.selected_enemy_2.bullet_shot = False
+                self.selected_enemy_2.attack(self.selected_enemy, player_x, player_y)      # Call the attack method
+                self.attack_timer = 0
+
+            elif num_of_enemies == 3:
+                self.selected_enemy = random.choice(self.trapezoid_sprites)
+                self.selected_enemy.bullet_shot = False
+                self.selected_enemy.attack(self.selected_enemy, player_x, player_y)      # Call the attack method
+                self.selected_enemy_2 = random.choice(self.trapezoid_sprites)
+                self.selected_enemy_2.bullet_shot = False
+                self.selected_enemy_2.attack(self.selected_enemy, player_x, player_y)      # Call the attack method
+                self.selected_enemy_3 = random.choice(self.trapezoid_sprites)
+                self.selected_enemy_3.bullet_shot = False
+                self.selected_enemy_3.attack(self.selected_enemy, player_x, player_y)      # Call the attack method
+                self.attack_timer = 0
+
+            
         if self.selected_enemy and not self.selected_enemy.bullet_shot:
-            self.fire_bullet(self.selected_enemy)
+            fired = self.fire_bullet(self.selected_enemy)
+            if fired:
+                self.selected_enemy.bullet_shot = True
+            
+
+        if self.selected_enemy_2 and not self.selected_enemy_2.bullet_shot:
+            self.fire_bullet(self.selected_enemy_2)
+            fired = self.fire_bullet(self.selected_enemy_2)
+            if fired:
+                self.selected_enemy_2.bullet_shot = True
+
+        if self.selected_enemy_3 and not self.selected_enemy_3.bullet_shot:
+            self.fire_bullet(self.selected_enemy_3)
+            fired = self.fire_bullet(self.selected_enemy_3)
+            if fired:
+                self.selected_enemy_3.bullet_shot = True
+
+    
 
          
 
@@ -120,6 +163,7 @@ class Trapezoid():
             bullet.change_y = -constant.ENEMY_BULLET_SPEED  # Moving down
             self.enemy_bullet_list.append(bullet)
 
-            self.selected_enemy.bullet_shot = True
+            return True
+            
             
 
