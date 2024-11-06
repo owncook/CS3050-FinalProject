@@ -27,7 +27,8 @@ class Trapezoid():
     # Helper function for populate rows
     def populate_row(self, num_enemies, enemy_type, home_y):
         
-        image_path = 'sources/enemies/' + enemy_type + '.jpeg'
+        image_path = 'sources/enemies/' + enemy_type + '.png'
+       
         sprite_width = arcade.Sprite(image_path, constant.ENEMY_SCALE, 0, 0).width
 
         group_delay = 0
@@ -68,15 +69,15 @@ class Trapezoid():
 
 
         home_y = constant.SCREEN_HEIGHT - constant.MARGIN_Y
-        self.populate_row(num_boss, 'json', home_y)
+        self.populate_row(num_boss, 'evilthing', home_y)
         home_y -= constant.ENEMY_SPACING_Y
-        self.populate_row(num_butterflies, 'json', home_y)
+        self.populate_row(num_butterflies, 'butterfly', home_y)
         home_y -= constant.ENEMY_SPACING_Y
-        self.populate_row(num_butterflies, 'json', home_y)
+        self.populate_row(num_butterflies, 'butterfly', home_y)
         home_y -= constant.ENEMY_SPACING_Y
-        self.populate_row(num_bees, 'json', home_y)
+        self.populate_row(num_bees, 'bee', home_y)
         home_y -= constant.ENEMY_SPACING_Y
-        self.populate_row(num_bees, 'json', home_y)
+        self.populate_row(num_bees, 'bee', home_y)
 
     def check_trapezoid_empty(self):
         return len(self.trapezoid_sprites) <= 0
