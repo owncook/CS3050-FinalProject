@@ -5,15 +5,18 @@ def load_database(username, score):
     doc_ref.set({'score' : score})
 
 def query_database():
+    top_scores = []
 
-    # Query the collection, sort by your integer field in descending order, and limit to top 5
+    # Gets top 5 scores descending order
     top_docs = (
-        db.collection("yourCollection")
-        .order_by("yourIntegerField", direction=firestore.Query.DESCENDING)
+        db.collection("scores")
+        .order_by("score", direction=firestore.Query.DESCENDING)
         .limit(5)
         .stream()
     )
 
-    # Print the document ID and data for the top 5 documents
+    # Add 5 tuples of format (username, score)
     for doc in top_docs:
-        print(f'Document ID: {doc.id} => Data: {doc.to_dict()}')
+        top_scores.append((doc.id, doc['score']))
+    
+    return top_scores
