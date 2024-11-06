@@ -177,11 +177,13 @@ class GameView(arcade.View):
 
         self.frame_count = 0
 
-        self.shoot_timer = .1
-        self.shoot_interval = .01
+        #TODO unused code/delete
+        # self.shoot_timer = .1
+        # self.shoot_interval = .01
 
-        # Trapezoid
+        # Enemy trapezoid creation and tracking variables
         self.enemy_trapezoid = Trapezoid()
+        self.stage_counter = 1
 
     def setup(self):
         """Set up the game variables and objects"""
@@ -221,10 +223,15 @@ class GameView(arcade.View):
         self.enemy_trapezoid.draw()
 
         # Put the text on the screen.
+        #---Score ---
         output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        #---Lives ---
         output = f"Lives: {self.lives}"
-        arcade.draw_text(output, 90, 20, arcade.color.WHITE, 14)
+        arcade.draw_text(output, 150, 20, arcade.color.WHITE, 14)
+        #---Stage ---
+        output = f"Stage: {self.stage_counter}"
+        arcade.draw_text(output, 900, 20, arcade.color.WHITE, 14)
 
     def on_key_press(self, key, modifiers):
         """Handle key press events"""
@@ -310,12 +317,12 @@ class GameView(arcade.View):
                     self.window.show_view(game_over_view)
 
         if self.enemy_trapezoid.check_trapezoid_empty():
+            self.stage_counter += 1
             self.enemy_trapezoid.populate_rows([4, 8, 10])
 
         for bullet in self.bullet_list:
 
             enemy_list = self.enemy_trapezoid.trapezoid_sprites
-
             enemies_hit = arcade.check_for_collision_with_list(bullet, enemy_list)
 
             if (len(enemies_hit) > 0):
@@ -323,7 +330,7 @@ class GameView(arcade.View):
 
             for enemy in enemies_hit:
                 enemy.remove_from_sprite_lists()
-                self.score += 1
+                self.score += constant.SCORE * (self.stage_counter/10)
 
                 arcade.play_sound(self.hit_sound)
 
