@@ -18,6 +18,7 @@ class StartView(arcade.View):
     def on_show_view(self):
         """ This is run once when we switch to this view """
         arcade.set_background_color(arcade.csscolor.BLACK)
+        self.window.set_mouse_visible(True)
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
@@ -114,25 +115,35 @@ class PauseView(arcade.View):
 
 class GameOverView(arcade.View):
     """ View to show when game is over """
-
     def __init__(self):
         """ This is run once when we switch to this view """
         super().__init__()
         # self.texture = arcade.load_texture("sources/game_over.png")
-        self.button_restart = arcade.gui.UIFlatButton(text="Restart Game", width=200)
-        self.button_highscore = arcade.gui.UIFlatButton(text="High Scores", width=200)
-        self.button_quit = arcade.gui.UIFlatButton(text="Quit", width=200)
+        # Creating a UI MANAGER to handle the UI
         self.ui_manager = arcade.gui.UIManager()
+        self.ui_manager.enable()
+        self.window.set_mouse_visible(True)
+        # Creating Button using UIFlatButton
+        start_button = arcade.gui.UIFlatButton(text="Restart Game",
+                                               width=200)
+        high_score_button = arcade.gui.UIFlatButton(text="Enter High Score",
+                                               width=200)
+        quit_button = arcade.gui.UIFlatButton(text="Quit",
+                                                    width=200)
 
-        # Add buttons to the UI manager
-        self.ui_manager.add(self.button_restart)
-        self.ui_manager.add(self.button_highscore)
-        self.ui_manager.add(self.button_quit)
+        # Assigning our on_buttonclick() function
+        start_button.on_click = self.restart_button_click
+        high_score_button.on_click = self.high_score_button_click
+        quit_button.on_click = self.quit_button_click
 
-        # Set the button actions
-        self.button_restart.on_click = self.restart_game
-        self.button_highscore.on_click = self.show_high_scores
-        self.button_quit.on_click = self.quit_program
+        # Adding button in our uimanager
+        self.ui_manager.add(
+            arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", align_y=-100, child=start_button))
+        self.ui_manager.add(
+            arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", align_y=-250, child=high_score_button))
+        self.ui_manager.add(
+            arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", align_y=-350, child=quit_button))
+
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
         arcade.set_viewport(0, constant.SCREEN_WIDTH - 1, 0, constant.SCREEN_HEIGHT - 1)
@@ -142,7 +153,6 @@ class GameOverView(arcade.View):
             x = random.randint(0, constant.SCREEN_WIDTH)
             y = random.randint(0, constant.SCREEN_HEIGHT)
             self.star_list.append((x, y))
-
 
     def on_draw(self):
         """ Draw this view """
@@ -155,25 +165,21 @@ class GameOverView(arcade.View):
         # constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
         arcade.draw_text("GAME OVER", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.75, arcade.color.RED, 50, anchor_x="center", anchor_y="center", font_name="Emulogic")
 
-        arcade.draw_text("Click to play again", self.window.width / 2, self.window.height / 2 - 200,
-                         arcade.color.RED, font_size=30, anchor_x="center")
-
     def restart_game(self, event):
         game_view = GameView()
         self.window.show_view(game_view)
 
-    def show_high_scores(self, event):
+    def high_score_button_click(self, event):
         print("High scores functionality is not yet implemented.")
 
-    def quit_program(self, event):
+    def quit_button_click(self, event):
         arcade.close_window()
-
-
-    def on_mouse_press(self, _x, _y, _button, _modifiers):
+    def restart_button_click(self, event):
         """ If the user presses the mouse button, re-start the game. """
         game_view = GameView()
         game_view.setup()
         self.window.show_view(game_view)
+
 
 
 
