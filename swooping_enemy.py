@@ -74,17 +74,6 @@ class Swooping_Enemy(arcade.Sprite):
         self.target_y = player_y
         self.attack_bullet_timer = time.time()
 
-
-
-    # def fire_bullet(self):
-    #     """Fire a bullet towards the player."""
-    #     bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
-    #     bullet.center_x = self.center_x
-    #     bullet.center_y = self.center_y
-    #     bullet.angle = math.atan2(self.target_y - self.center_y, self.target_x - self.center_x)
-    #     bullet.change_x = math.cos(bullet.angle) * constant.BULLET_SPEED
-    #     bullet.change_y = math.sin(bullet.angle) * constant.BULLET_SPEED
-    #     return bullet
     
     def on_draw(self):
         arcade.start_render()
