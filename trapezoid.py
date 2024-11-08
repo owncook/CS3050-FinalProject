@@ -2,6 +2,7 @@ import arcade
 import time
 import constant
 import random
+import math
 from swooping_enemy import Swooping_Enemy
 
 
@@ -22,6 +23,12 @@ class Trapezoid():
 
         # Populate rows with enemies
         self.populate_rows([4, 8, 10])
+
+        # Moving trapezoid
+        self.left = 171.5
+        self.right = 828.5
+        self.direction = -1
+
 
     
     # Helper function for populate rows
@@ -46,7 +53,7 @@ class Trapezoid():
         for i in range(int(num_enemies / 2)):
 
             home_x = (((i + 1) * (constant.ENEMY_SPACING_X / 2 + sprite_width / 2))
-                      + (i * (sprite_width / 2 + constant.ENEMY_SPACING_X / 2)))
+                      + (i * (constant.ENEMY_SPACING_X / 2 + sprite_width / 2)))
 
 
             left_sprite = (Swooping_Enemy(image_paths,
@@ -64,9 +71,31 @@ class Trapezoid():
 
             group_delay += 1
 
-
             self.trapezoid_sprites.append(left_sprite)
             self.trapezoid_sprites.append(right_sprite)
+
+
+    def move_trapezoid(self):
+        """Shifts trapezoid around to make enemies harder to hit"""
+
+        if self.left == 20.5 or self.right == 979.5:
+            self.direction *= -1
+
+        # Change trapezoid right and left by 1
+            self.left += self.direction
+            self.right += self.direction
+        
+        # For all enemies in list
+        for enemy in self.trapezoid_sprites:
+        
+            # Move home_x left/right 1
+            enemy.home_x += self.direction
+            
+            # Check if attacking or spawning
+            if not (enemy.is_spawning or enemy.is_attacking):
+                # If not, set center x to home_x
+                enemy.center_x = enemy.home_x
+
 
 
     def populate_rows(self, enemies_per_row):
