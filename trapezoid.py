@@ -78,14 +78,14 @@ class Trapezoid():
 
     def move_trapezoid(self):
         """Shifts trapezoid around to make enemies harder to hit"""
-        print(self.left)
+
         # TODO: change these from hard code to not
         if self.left == 20.5 or self.right == 979.5:
             self.direction *= -1
 
         # Change trapezoid right and left by 1
-            self.left += self.direction
-            self.right += self.direction
+        self.left += self.direction
+        self.right += self.direction
         
         # For all enemies in list
         for enemy in self.trapezoid_sprites:
