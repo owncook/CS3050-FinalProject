@@ -26,10 +26,20 @@ class Trapezoid():
     
     # Helper function for populate rows
     def populate_row(self, num_enemies, enemy_type, home_y):
+        if enemy_type == "bee":
+            image_paths = [
+                'sources/enemies/bee.png',
+                'sources/enemies/bee_frame2.png'
+            ]
+        elif enemy_type == "butterfly":
+            image_paths = [
+                'sources/enemies/butterfly.png',
+                'sources/enemies/butterfly_frame2.png'
+            ]
+        else:
+            image_paths = ['sources/enemies/' + enemy_type + '.png']
         
-        image_path = 'sources/enemies/' + enemy_type + '.png'
-       
-        sprite_width = arcade.Sprite(image_path, constant.ENEMY_SCALE, 0, 0).width
+        sprite_width = arcade.Sprite(image_paths[0], constant.ENEMY_SCALE, 0, 0).width
 
         group_delay = 0
 
@@ -39,11 +49,11 @@ class Trapezoid():
                       + (i * (sprite_width / 2 + constant.ENEMY_SPACING_X / 2)))
 
 
-            left_sprite = (Swooping_Enemy(image_path,
+            left_sprite = (Swooping_Enemy(image_paths,
                                           constant.ENEMY_SCALE,
                                           constant.SCREEN_WIDTH // 2 - home_x,
                                           home_y))
-            right_sprite = (Swooping_Enemy(image_path,
+            right_sprite = (Swooping_Enemy(image_paths,
                                           constant.ENEMY_SCALE,
                                           constant.SCREEN_WIDTH // 2 + home_x,
                                           home_y))
@@ -143,11 +153,9 @@ class Trapezoid():
             if fired:
                 self.selected_enemy_3.bullet_shot = True
 
-    
-
-         
 
         for enemy in self.trapezoid_sprites:
+            enemy.update_animation(delta_time) 
             enemy.update_swoop_timer(delta_time)  # Increment attack timer for each enemy
             enemy.update(delta_time, player_x, player_y)  # Update each enemy
 
