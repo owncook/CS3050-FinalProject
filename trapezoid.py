@@ -25,9 +25,10 @@ class Trapezoid():
         self.populate_rows([4, 8, 10])
 
         # Moving trapezoid
-        # TODO: change form hard code to not
-        self.left = 171.5
-        self.right = 828.5
+        # TODO: change form hard code
+
+        self.left = 10000#float('inf') # Coordinate of the smallest center_x
+        self.right = -10000#float('-inf') # Coordinate of largest center_x
         self.direction = -1
 
 
@@ -70,16 +71,53 @@ class Trapezoid():
             left_sprite.start_delay = group_delay
             right_sprite.start_delay = group_delay
 
+
+            if left_sprite.home_x - sprite_width / 2 < self.left:
+                print('reached')
+                self.left = left_sprite.home_x - sprite_width / 2
+                print(self.left)
+            
+
+            if right_sprite.home_x + sprite_width / 2 > self.right:
+                print('reached')
+                self.right = right_sprite.home_x + sprite_width / 2
+                print(self.right)
+
             group_delay += 1
 
             self.trapezoid_sprites.append(left_sprite)
             self.trapezoid_sprites.append(right_sprite)
 
 
+    def populate_rows(self, enemies_per_row):
+        """Helper method to populate a row with a given number of enemies at a specified y_position."""
+
+        # Unpacking enemies per row
+        num_boss = enemies_per_row[0]
+        num_butterflies = enemies_per_row[1]
+        num_bees = enemies_per_row[2]
+
+        # Reset movement
+        self.left = float('inf') # Coordinate of the smallest center_x
+        self.right = float('-inf') # Coordinate of largest center_x
+
+
+        home_y = constant.SCREEN_HEIGHT - constant.MARGIN_Y
+        self.populate_row(num_boss, 'evilthing', home_y)
+        home_y -= constant.ENEMY_SPACING_Y
+        self.populate_row(num_butterflies, 'butterfly', home_y)
+        home_y -= constant.ENEMY_SPACING_Y
+        self.populate_row(num_butterflies, 'butterfly', home_y)
+        home_y -= constant.ENEMY_SPACING_Y
+        self.populate_row(num_bees, 'bee', home_y)
+        home_y -= constant.ENEMY_SPACING_Y
+        self.populate_row(num_bees, 'bee', home_y)
+
     def move_trapezoid(self):
         """Shifts trapezoid around to make enemies harder to hit"""
 
         # TODO: change these from hard code to not
+        # 20.5 is really the minimum of the 
         if self.left == 20.5 or self.right == 979.5:
             self.direction *= -1
 
@@ -98,28 +136,6 @@ class Trapezoid():
                 # If not, set center x to home_x
                 enemy.center_x = enemy.home_x
 
-
-
-    def populate_rows(self, enemies_per_row):
-        """Helper method to populate a row with a given number of enemies at a specified y_position."""
-
-        # Unpacking enemies per row
-        num_boss = enemies_per_row[0]
-        num_butterflies = enemies_per_row[1]
-        num_bees = enemies_per_row[2]
-
-
-        home_y = constant.SCREEN_HEIGHT - constant.MARGIN_Y
-        self.populate_row(num_boss, 'evilthing', home_y)
-        home_y -= constant.ENEMY_SPACING_Y
-        self.populate_row(num_butterflies, 'butterfly', home_y)
-        home_y -= constant.ENEMY_SPACING_Y
-        self.populate_row(num_butterflies, 'butterfly', home_y)
-        home_y -= constant.ENEMY_SPACING_Y
-        self.populate_row(num_bees, 'bee', home_y)
-        home_y -= constant.ENEMY_SPACING_Y
-        self.populate_row(num_bees, 'bee', home_y)
-
     def check_trapezoid_empty(self):
         return len(self.trapezoid_sprites) <= 0
 
@@ -131,6 +147,8 @@ class Trapezoid():
 
     def update(self, delta_time, player_x, player_y):
         """Update all rows of enemies."""
+
+        # print(self.left, self.right)
 
         self.attack_timer += delta_time
         three = [1, 2, 3]
