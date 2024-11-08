@@ -25,6 +25,7 @@ class Trapezoid():
         self.populate_rows([4, 8, 10])
 
         # Moving trapezoid
+        # TODO: change form hard code to not
         self.left = 171.5
         self.right = 828.5
         self.direction = -1
@@ -77,7 +78,8 @@ class Trapezoid():
 
     def move_trapezoid(self):
         """Shifts trapezoid around to make enemies harder to hit"""
-
+        print(self.left)
+        # TODO: change these from hard code to not
         if self.left == 20.5 or self.right == 979.5:
             self.direction *= -1
 
@@ -182,6 +184,7 @@ class Trapezoid():
             if fired:
                 self.selected_enemy_3.bullet_shot = True
 
+        self.move_trapezoid()
 
         for enemy in self.trapezoid_sprites:
             enemy.update_animation(delta_time) 
