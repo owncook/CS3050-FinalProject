@@ -189,6 +189,19 @@ class GameView(arcade.View):
     def __init__(self):
         # Initialize the game window
         super().__init__()
+         #-- Animation
+        self.player_image_paths = ['sources/uvmship.png',
+                'sources/uvmship_frame2.png']
+        self.frames = [arcade.load_texture(img) for img in self.player_image_paths]
+        self.current_frame = 0
+        self.animation_timer = 0.0  # Timer to track animation speed
+        self.animation_speed = 0.5  # Time in seconds between frames
+
+        self.player_sprite = arcade.Sprite()
+        self.player_sprite.texture = self.frames[self.current_frame]
+        self.player_sprite.scale = 1.5
+        self.player_sprite.center_x = constant.SCREEN_WIDTH // 2
+        self.player_sprite.center_y = 50
 
         # Set background color
         arcade.set_background_color(arcade.color.BLACK)
@@ -196,7 +209,6 @@ class GameView(arcade.View):
         self.star_list = []
 
         # Initialize variables for the player, enemies, bullets, etc.
-        self.player_sprite = None
         self.test_enemy = None
         self.enemy_list = None
         self.bullet_list = None
@@ -228,9 +240,9 @@ class GameView(arcade.View):
     def setup(self):
         """Set up the game variables and objects"""
         # Initialize player sprite and sprite lists
-        self.player_sprite = arcade.Sprite("sources/player.png", scale=constant.PLAYER_SCALE)
-        self.player_sprite.center_x = constant.SCREEN_WIDTH // 2
-        self.player_sprite.center_y = 50
+        # self.player_sprite = arcade.Sprite("sources/player.png", scale=constant.PLAYER_SCALE)
+        # self.player_sprite.center_x = constant.SCREEN_WIDTH // 2
+        # self.player_sprite.center_y = 50
 
         # Initialize sprite lists
         self.enemy_list = arcade.SpriteList()
@@ -247,6 +259,17 @@ class GameView(arcade.View):
         for _ in range(constant.STAR_COUNT):
             star = Star()
             self.star_list.append(star)
+    
+    def update_animation(self, delta_time):
+        # Increment animation timer
+        self.animation_timer += delta_time
+        # If enough time has passed, change frame
+        if self.animation_timer >= self.animation_speed:
+            self.animation_timer = 0
+            # Switch to the next frame
+            self.current_frame = (self.current_frame + 1) % len(self.frames)
+            # Update player sprite texture to show the current frame
+            self.player_sprite.texture = self.frames[self.current_frame]
 
 
     def on_draw(self):
@@ -336,6 +359,8 @@ class GameView(arcade.View):
         self.time_elapsed += delta_time
 
         self.explosions_list.update()
+
+        self.update_animation(delta_time)
 
         # Update bullets and check for collisions
         self.bullet_list.update()
