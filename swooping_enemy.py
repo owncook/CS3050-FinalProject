@@ -8,8 +8,14 @@ import time
 class Swooping_Enemy(arcade.Sprite):
     """Enemy class to populate the enemies in a swooping motion every two seconds for now.
     Will potentially update as we count time game has gone on for/to make grid more rigid instead of random."""
-    def __init__(self, image, scale, home_x, home_y):
-        super().__init__(image, scale)
+    def __init__(self, image_paths, scale, home_x, home_y):
+        super().__init__(image_paths[0], scale)
+        #-- Animation
+        self.frames = [arcade.load_texture(img) for img in image_paths]
+        self.current_frame = 0
+        self.animation_timer = 0.0  # Timer to track animation speed
+        self.animation_speed = 0.5  # Time in seconds between frames
+
         # set where on the screen the enemies will spawn from
         self.start_x = constant.SCREEN_WIDTH/2
         self.start_y = constant.SCREEN_HEIGHT + constant.ENEMY_OFFSCREEN_MARGIN #TODO: will be updated to go with the spawnMovement() method
@@ -40,6 +46,16 @@ class Swooping_Enemy(arcade.Sprite):
         self.is_attacking = False
         self.attack_bullet_timer = 0
         self.bullet_shot = False
+    
+    def update_animation(self, delta_time):
+        # Increment animation timer
+        self.animation_timer += delta_time
+        # If enough time has passed, change frame
+        if self.animation_timer >= self.animation_speed:
+            self.animation_timer = 0
+            # Switch to the next frame
+            self.current_frame = (self.current_frame + 1) % len(self.frames)
+            self.texture = self.frames[self.current_frame]
 
     def setup(self):
         self.enemy_bullet_list = arcade.SpriteList()
@@ -58,17 +74,6 @@ class Swooping_Enemy(arcade.Sprite):
         self.target_y = player_y
         self.attack_bullet_timer = time.time()
 
-
-
-    # def fire_bullet(self):
-    #     """Fire a bullet towards the player."""
-    #     bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
-    #     bullet.center_x = self.center_x
-    #     bullet.center_y = self.center_y
-    #     bullet.angle = math.atan2(self.target_y - self.center_y, self.target_x - self.center_x)
-    #     bullet.change_x = math.cos(bullet.angle) * constant.BULLET_SPEED
-    #     bullet.change_y = math.sin(bullet.angle) * constant.BULLET_SPEED
-    #     return bullet
     
     def on_draw(self):
         arcade.start_render()
