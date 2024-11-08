@@ -165,7 +165,6 @@ class Trapezoid():
         if(time.time() - enemy.attack_bullet_timer) > 1.5 and enemy.bullet_shot == False:
 
             bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
-            print("tester")
             bullet.center_x = enemy.center_x                
             bullet.center_y = enemy.top  # Start the bullet just above the enemy  
             bullet.angle = 180  #downwards is 270 degrees
