@@ -2,12 +2,15 @@ import random
 import arcade
 import arcade.key
 import arcade.gui
+from arcade.gui import UIManager
+
 import constant
 from constant import *
 import database
 import math
 from trapezoid import Trapezoid
 from star import Star
+
 arcade.load_font("sources/fonts/emulogic-font/Emulogic-zrEw.ttf")
 from explosions import Smoke, Particle
 
@@ -18,12 +21,14 @@ class StartView(arcade.View):
     def on_show_view(self):
         """ This is run once when we switch to this view """
         arcade.set_background_color(arcade.csscolor.BLACK)
+        self.ui_manager_start = arcade.gui.UIManager()
+        self.ui_manager_start.enable()
         self.window.set_mouse_visible(True)
-
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
-
+        start_button = arcade.gui.UIFlatButton(text="Start Game",
+                                               width=200)
         # Depending on galaga versions, the start screen has space art ie: planets/stars. 
         # I am adding stars to ours via a list of random coordinates.
         self.star_list = []
@@ -32,6 +37,9 @@ class StartView(arcade.View):
             x = random.randint(0, constant.SCREEN_WIDTH)
             y = random.randint(0, constant.SCREEN_HEIGHT)
             self.star_list.append((x, y))
+        self.ui_manager_start.add(
+            arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", align_y=-50, child=start_button))
+        start_button.on_click = self.start_button_click
 
     def on_draw(self):
         """ Draw this view """
@@ -60,13 +68,11 @@ class StartView(arcade.View):
 
         # Draw the main text on top in green
         arcade.draw_text(text, text_x, text_y, fill_color, font_size=50, anchor_x="center", anchor_y="center")
+        self.ui_manager_start.draw()
 
-        # Advance to game instruction
-        arcade.draw_text("Click to advance", self.window.width / 2, self.window.height / 2 - 75,
-                         arcade.color.WHITE, font_size=20, anchor_x="center")
-
-    def on_mouse_press(self, _x, _y, _button, _modifiers):
+    def start_button_click(self, event):
         """ If the user presses the mouse button, start the game. """
+        self.ui_manager_start.disable()
         game_view = GameView()
         game_view.setup()
         self.window.show_view(game_view)
@@ -78,7 +84,7 @@ class PauseView(arcade.View):
         self.game_view = game_view
 
     def on_show_view(self):
-        arcade.set_background_color(arcade.color.DARK_SEA_GREEN)
+        arcade.set_background_color(arcade.color.RED)
 
     def on_draw(self):
         self.clear()
@@ -94,7 +100,7 @@ class PauseView(arcade.View):
                                           right=player_sprite.right,
                                           top=player_sprite.top,
                                           bottom=player_sprite.bottom,
-                                          color=arcade.color.ORANGE + (200,))
+                                          color=arcade.color.GREEN + (200,))
 
         arcade.draw_text("PAUSED", constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2 + 50,
                          arcade.color.BLACK, font_size=50, anchor_x="center")
@@ -115,34 +121,41 @@ class PauseView(arcade.View):
 
 class GameOverView(arcade.View):
     """ View to show when game is over """
+
     def __init__(self):
         """ This is run once when we switch to this view """
         super().__init__()
         # self.texture = arcade.load_texture("sources/game_over.png")
         # Creating a UI MANAGER to handle the UI
-        self.ui_manager = arcade.gui.UIManager()
-        self.ui_manager.enable()
+        self.ui_manager_end = arcade.gui.UIManager()
+        self.ui_manager_end.enable()
         self.window.set_mouse_visible(True)
         # Creating Button using UIFlatButton
-        start_button = arcade.gui.UIFlatButton(text="Restart Game",
-                                               width=200)
-        high_score_button = arcade.gui.UIFlatButton(text="Enter High Score",
-                                               width=200)
-        quit_button = arcade.gui.UIFlatButton(text="Quit",
+        restart_button = arcade.gui.UIFlatButton(text="Restart Game",
+                                                 width=200)
+        leaderboard_button = arcade.gui.UIFlatButton(text="Enter Score",
                                                     width=200)
+        self.text_box = arcade.gui.UIInputText(
+            SCREEN_WIDTH / 2 - 95, SCREEN_HEIGHT / 2 - 105,
+            width=200, height=30,
+            text_color=arcade.color.RED,
+        )
+        self.ui_manager_end.add(self.text_box)
+        quit_button = arcade.gui.UIFlatButton(text="Quit",
+                                              width=200)
 
         # Assigning our on_buttonclick() function
-        start_button.on_click = self.restart_button_click
-        high_score_button.on_click = self.high_score_button_click
+        leaderboard_button.on_click = self.leaderboard_button_click
+        restart_button.on_click = self.restart_button_click
         quit_button.on_click = self.quit_button_click
 
         # Adding button in our uimanager
-        self.ui_manager.add(
-            arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", align_y=-100, child=start_button))
-        self.ui_manager.add(
-            arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", align_y=-250, child=high_score_button))
-        self.ui_manager.add(
-            arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", align_y=-350, child=quit_button))
+        self.ui_manager_end.add(
+            arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", align_y=-145, child=leaderboard_button))
+        self.ui_manager_end.add(
+            arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", align_y=-220, child=restart_button))
+        self.ui_manager_end.add(
+            arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", align_y=-295, child=quit_button))
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
@@ -157,23 +170,23 @@ class GameOverView(arcade.View):
     def on_draw(self):
         """ Draw this view """
         self.clear()
-        self.ui_manager.draw()
         for star in self.star_list:
             x, y = star
             arcade.draw_circle_filled(x, y, 2, arcade.color.WHITE)
-        # self.texture.draw_sized(constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2,
-        # constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
-        arcade.draw_text("GAME OVER", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.75, arcade.color.RED, 50, anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text("Enter Name Below:", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 40, arcade.color.RED, 15,
+                         anchor_x="center", anchor_y="center")
+        arcade.draw_rectangle_filled(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 85, 200, 30, arcade.color.WHITE)
+        self.ui_manager_end.draw()
+        arcade.draw_text("GAME OVER", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.75, arcade.color.RED, 50,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
 
-    def restart_game(self, event):
-        game_view = GameView()
-        self.window.show_view(game_view)
-
-    def high_score_button_click(self, event):
-        print("High scores functionality is not yet implemented.")
+    def leaderboard_button_click(self, event):
+        leaderboard_view = LeaderboardView(self)
+        self.window.show_view(leaderboard_view)
 
     def quit_button_click(self, event):
         arcade.close_window()
+
     def restart_button_click(self, event):
         """ If the user presses the mouse button, re-start the game. """
         game_view = GameView()
@@ -181,6 +194,18 @@ class GameOverView(arcade.View):
         self.window.show_view(game_view)
 
 
+class LeaderboardView(arcade.View):
+    def __init__(self, game_view):
+        super().__init__()
+        self.game_view = game_view
+
+    def on_show_view(self):
+        arcade.set_background_color(arcade.color.BLACK)
+
+    def on_draw(self):
+        self.clear()
+        arcade.draw_text("LEADERBOARD:", constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2 + 50,
+                         arcade.color.RED, font_size=50, anchor_x="center")
 
 
 class GameView(arcade.View):
@@ -189,9 +214,9 @@ class GameView(arcade.View):
     def __init__(self):
         # Initialize the game window
         super().__init__()
-         #-- Animation
+        # -- Animation
         self.player_image_paths = ['sources/uvmship.png',
-                'sources/uvmship_frame2.png']
+                                   'sources/uvmship_frame2.png']
         self.frames = [arcade.load_texture(img) for img in self.player_image_paths]
         self.current_frame = 0
         self.animation_timer = 0.0  # Timer to track animation speed
@@ -229,7 +254,7 @@ class GameView(arcade.View):
 
         self.frame_count = 0
 
-        #TODO unused code/delete
+        # TODO unused code/delete
         # self.shoot_timer = .1
         # self.shoot_interval = .01
 
@@ -253,13 +278,11 @@ class GameView(arcade.View):
         # Score
         self.score = 0
 
-
-
         # Setup stars
         for _ in range(constant.STAR_COUNT):
             star = Star()
             self.star_list.append(star)
-    
+
     def update_animation(self, delta_time):
         # Increment animation timer
         self.animation_timer += delta_time
@@ -270,7 +293,6 @@ class GameView(arcade.View):
             self.current_frame = (self.current_frame + 1) % len(self.frames)
             # Update player sprite texture to show the current frame
             self.player_sprite.texture = self.frames[self.current_frame]
-
 
     def on_draw(self):
         """Render the screen"""
@@ -289,20 +311,19 @@ class GameView(arcade.View):
         self.enemy_trapezoid.draw()
 
         # Put the text on the screen.
-        #---Score ---
+        # ---Score ---
         output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
-        #---Lives ---
+        # ---Lives ---
         for i in range(self.lives):
-            x_position = 150 + i * 30 
+            x_position = 150 + i * 30
             arcade.draw_texture_rectangle(x_position, 20, 40, 40, self.heart_texture)
 
-
-        #---Stage ---
+        # ---Stage ---
         output = f"Stage: {self.stage_counter}"
         arcade.draw_text(output, 900, 20, arcade.color.WHITE, 14)
-        
-        #Draw explosions
+
+        # Draw explosions
         self.explosions_list.draw()
 
     def on_key_press(self, key, modifiers):
@@ -371,7 +392,6 @@ class GameView(arcade.View):
         elif self.player_sprite.right > constant.SCREEN_WIDTH:
             self.player_sprite.right = constant.SCREEN_WIDTH
 
-
         # Handle collision detection and life reduction
         for enemy_bullet in self.enemy_trapezoid.enemy_bullet_list:
             if arcade.check_for_collision(enemy_bullet, self.player_sprite):
@@ -406,7 +426,7 @@ class GameView(arcade.View):
 
             for enemy in enemies_hit:
                 enemy.remove_from_sprite_lists()
-                self.score += constant.SCORE * (self.stage_counter/10)
+                self.score += constant.SCORE * (self.stage_counter / 10)
                 # Make an explosion
                 for i in range(PARTICLE_COUNT):
                     particle = Particle(self.explosions_list)
@@ -419,7 +439,6 @@ class GameView(arcade.View):
 
                 self.score += 1
 
-
                 arcade.play_sound(self.hit_sound)
 
             if bullet.bottom > constant.SCREEN_HEIGHT:
@@ -428,4 +447,3 @@ class GameView(arcade.View):
         # Update stars to appear as scrolling
         for star in self.star_list:
             star.update()
-
