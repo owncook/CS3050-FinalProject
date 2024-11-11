@@ -163,14 +163,13 @@ class Trapezoid():
     def fire_bullet(self, enemy):
         "A helper function responsible for the firing of the bullet which is called from update"
         if(time.time() - enemy.attack_bullet_timer) > 1.5 and enemy.bullet_shot == False:
-
-            bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
-            bullet.center_x = enemy.center_x                
-            bullet.center_y = enemy.top  # Start the bullet just above the enemy  
-            bullet.angle = 180  #downwards is 270 degrees
-            bullet.change_y = -constant.ENEMY_BULLET_SPEED  # Moving down
-            self.enemy_bullet_list.append(bullet)
-
+            if(enemy in self.trapezoid_sprites):
+                bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
+                bullet.center_x = enemy.center_x                
+                bullet.center_y = enemy.top  # Start the bullet just above the enemy  
+                bullet.angle = 180  #downwards is 270 degrees
+                bullet.change_y = -constant.ENEMY_BULLET_SPEED  # Moving down
+                self.enemy_bullet_list.append(bullet)
             return True
             
             
