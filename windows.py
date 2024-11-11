@@ -199,7 +199,7 @@ class GameView(arcade.View):
 
         self.player_sprite = arcade.Sprite()
         self.player_sprite.texture = self.frames[self.current_frame]
-        self.player_sprite.scale = 1.5
+        self.player_sprite.scale = constant.PLAYER_SCALE
         self.player_sprite.center_x = constant.SCREEN_WIDTH // 2
         self.player_sprite.center_y = 50
 
