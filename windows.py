@@ -12,6 +12,7 @@ from trapezoid import Trapezoid
 from star import Star
 
 arcade.load_font("sources/fonts/emulogic-font/Emulogic-zrEw.ttf")
+arcade.load_font("sources/fonts/danger-on-the-motorway-font/DangerOnTheMotorway-xV10.ttf")
 from explosions import Smoke, Particle
 
 
@@ -125,8 +126,14 @@ class GameOverView(arcade.View):
     def __init__(self):
         """ This is run once when we switch to this view """
         super().__init__()
-        # self.texture = arcade.load_texture("sources/game_over.png")
-        # Creating a UI MANAGER to handle the UI
+
+    def on_show_view(self):
+        self.star_list = []
+        # Generate star positions
+        for _ in range(50):  # Adjust the passed range to change the amount of stars
+            x = random.randint(0, constant.SCREEN_WIDTH)
+            y = random.randint(0, constant.SCREEN_HEIGHT)
+            self.star_list.append((x, y))
         self.ui_manager_end = arcade.gui.UIManager()
         self.ui_manager_end.enable()
         self.window.set_mouse_visible(True)
@@ -159,13 +166,7 @@ class GameOverView(arcade.View):
 
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
-        arcade.set_viewport(0, constant.SCREEN_WIDTH - 1, 0, constant.SCREEN_HEIGHT - 1)
-        self.star_list = []
-        # Generate star positions
-        for _ in range(50):  # Adjust the passed range to change the amount of stars
-            x = random.randint(0, constant.SCREEN_WIDTH)
-            y = random.randint(0, constant.SCREEN_HEIGHT)
-            self.star_list.append((x, y))
+
 
     def on_draw(self):
         """ Draw this view """
@@ -181,14 +182,18 @@ class GameOverView(arcade.View):
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
 
     def leaderboard_button_click(self, event):
+        self.ui_manager_end.disable()
         leaderboard_view = LeaderboardView(self)
         self.window.show_view(leaderboard_view)
 
     def quit_button_click(self, event):
+        self.ui_manager_end.disable()
         arcade.close_window()
+
 
     def restart_button_click(self, event):
         """ If the user presses the mouse button, re-start the game. """
+        self.ui_manager_end.disable()
         game_view = GameView()
         game_view.setup()
         self.window.show_view(game_view)
@@ -197,15 +202,48 @@ class GameOverView(arcade.View):
 class LeaderboardView(arcade.View):
     def __init__(self, game_view):
         super().__init__()
-        self.game_view = game_view
-
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
+        self.ui_manager_leaderboard = arcade.gui.UIManager()
+        self.ui_manager_leaderboard.enable()
+        self.window.set_mouse_visible(True)
+        self.star_list = []
+        # Generate star positions
+        for _ in range(50):  # Adjust the passed range to change the amount of stars
+            x = random.randint(0, constant.SCREEN_WIDTH)
+            y = random.randint(0, constant.SCREEN_HEIGHT)
+            self.star_list.append((x, y))
+        restart_button = arcade.gui.UIFlatButton(text="Restart Game",
+                                                 width=200)
+        quit_button = arcade.gui.UIFlatButton(text="Quit",
+                                              width=200)
+        restart_button.on_click = self.restart_button_click
+        quit_button.on_click = self.quit_button_click
+        self.ui_manager_leaderboard.add(
+            arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", align_y=-220, child=restart_button))
+        self.ui_manager_leaderboard.add(
+            arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", align_y=-295, child=quit_button))
+        arcade.set_viewport(0, constant.SCREEN_WIDTH - 1, 0, constant.SCREEN_HEIGHT - 1)
 
     def on_draw(self):
         self.clear()
-        arcade.draw_text("LEADERBOARD:", constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2 + 50,
-                         arcade.color.RED, font_size=50, anchor_x="center")
+        for star in self.star_list:
+            x, y = star
+            arcade.draw_circle_filled(x, y, 2, arcade.color.WHITE)
+        self.ui_manager_leaderboard.draw()
+        arcade.draw_text("LEADERBOARD", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.1, arcade.color.RED, 50,
+                         anchor_x="center", anchor_y="center", font_name="DangerOnTheMotorway")
+    def quit_button_click(self, event):
+        self.ui_manager_leaderboard.disable()
+        arcade.close_window()
+
+
+    def restart_button_click(self, event):
+        """ If the user presses the mouse button, re-start the game. """
+        self.ui_manager_leaderboard.disable()
+        game_view = GameView()
+        game_view.setup()
+        self.window.show_view(game_view)
 
 
 class GameView(arcade.View):
