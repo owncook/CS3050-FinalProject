@@ -12,7 +12,7 @@ from trapezoid import Trapezoid
 from star import Star
 
 arcade.load_font("sources/fonts/emulogic-font/Emulogic-zrEw.ttf")
-arcade.load_font("sources/fonts/danger-on-the-motorway-font/DangerOnTheMotorway-xV10.ttf")
+arcade.load_font("sources/fonts/ozone-font/Ozone-xRRO.ttf")
 from explosions import Smoke, Particle
 
 
@@ -232,7 +232,7 @@ class LeaderboardView(arcade.View):
             arcade.draw_circle_filled(x, y, 2, arcade.color.WHITE)
         self.ui_manager_leaderboard.draw()
         arcade.draw_text("LEADERBOARD", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.1, arcade.color.RED, 50,
-                         anchor_x="center", anchor_y="center", font_name="DangerOnTheMotorway")
+                         anchor_x="center", anchor_y="center", font_name="Ozone")
     def quit_button_click(self, event):
         self.ui_manager_leaderboard.disable()
         arcade.close_window()
