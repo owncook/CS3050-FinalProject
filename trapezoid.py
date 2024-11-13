@@ -167,7 +167,7 @@ class Trapezoid():
                 bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=1)
                 bullet.center_x = enemy.center_x                
                 bullet.center_y = enemy.top  # Start the bullet just above the enemy  
-                bullet.angle = 180  #downwards is 270 degrees
+                bullet.angle = 180  #downwards 
                 bullet.change_y = -constant.ENEMY_BULLET_SPEED  # Moving down
                 self.enemy_bullet_list.append(bullet)
             return True

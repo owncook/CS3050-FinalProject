@@ -8,7 +8,7 @@ SCREEN_TITLE = "Galaga Game Window"
 
 # --- Player ---
 PLAYER_SCALE = 2
-BULLET_SPEED = 10
+BULLET_SPEED = 5
 MAX_BULLETS = 2
 
 # --- Enemies --- 
@@ -20,13 +20,10 @@ ATTACK_INTERVAL = 4
 MARGIN_X = 100
 MARGIN_Y = 100
 ENEMY_OFFSCREEN_MARGIN = 30
-ENEMY_SPEED = 4
-
-
-BULLET_SPEED = 5
+ENEMY_SPEED = 5
 ENEMY_BULLET_SPEED = 8
 
-## --- Game --- 
+# --- Game --- 
 SCORE = 10
 
 # --- Stars ---
@@ -34,10 +31,12 @@ STAR_COUNT = 100
 STAR_SPEED = 2
 TWINKLE_SPEED = 0.1
 
+# --- Planets ---
+PLANET_SPEED = STAR_SPEED
+PLANET_SCALE = 2
+
 # --- Database ---
 NUM_HIGHSCORES = 5
-
-
 
 # --- Explosions
 # How fast the particle will accelerate down. Make 0 if not desired
