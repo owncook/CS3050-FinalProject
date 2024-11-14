@@ -27,8 +27,8 @@ class Trapezoid():
         # Moving trapezoid
         # TODO: change form hard code
 
-        self.left = 10000#float('inf') # Coordinate of the smallest center_x
-        self.right = -10000#float('-inf') # Coordinate of largest center_x
+        self.left = 10000 # float('inf') # Coordinate of the smallest center_x
+        self.right = -10000 # float('-inf') # Coordinate of largest center_x
         self.direction = -1
 
 
