@@ -481,8 +481,6 @@ class GameView(arcade.View):
                 smoke.position = enemy.position
                 self.explosions_list.append(smoke)
 
-                self.score += 1
-
                 arcade.play_sound(self.hit_sound)
 
             if bullet.bottom > constant.SCREEN_HEIGHT:
