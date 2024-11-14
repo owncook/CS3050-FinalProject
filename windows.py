@@ -6,7 +6,12 @@ from arcade.gui import UIManager
 
 import constant
 from constant import *
+
+from database import *
+
+
 from planet import Planet
+
 from trapezoid import Trapezoid
 from star import Star
 
@@ -125,27 +130,28 @@ class GameOverView(arcade.View):
     def __init__(self):
         """ This is run once when we switch to this view """
         super().__init__()
+        self.star_list = []
+        self.ui_manager_end = arcade.gui.UIManager()
+        self.text_input = ""
 
     def on_show_view(self):
-        self.star_list = []
         # Generate star positions
         for _ in range(50):  # Adjust the passed range to change the amount of stars
             x = random.randint(0, constant.SCREEN_WIDTH)
             y = random.randint(0, constant.SCREEN_HEIGHT)
             self.star_list.append((x, y))
-        self.ui_manager_end = arcade.gui.UIManager()
         self.ui_manager_end.enable()
         self.window.set_mouse_visible(True)
         # Creating Button using UIFlatButton
-        restart_button = arcade.gui.UIFlatButton(text="Restart Game",
-                                                 width=200)
-        leaderboard_button = arcade.gui.UIFlatButton(text="Enter Score",
-                                                    width=200)
         self.text_box = arcade.gui.UIInputText(
             SCREEN_WIDTH / 2 - 95, SCREEN_HEIGHT / 2 - 105,
             width=200, height=30,
             text_color=arcade.color.RED,
         )
+        restart_button = arcade.gui.UIFlatButton(text="Restart Game",
+                                                 width=200)
+        leaderboard_button = arcade.gui.UIFlatButton(text="Enter Score",
+                                                     width=200)
         self.ui_manager_end.add(self.text_box)
         quit_button = arcade.gui.UIFlatButton(text="Quit",
                                               width=200)
@@ -166,21 +172,28 @@ class GameOverView(arcade.View):
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
 
-
     def on_draw(self):
         """ Draw this view """
         self.clear()
         for star in self.star_list:
             x, y = star
             arcade.draw_circle_filled(x, y, 2, arcade.color.WHITE)
-        arcade.draw_text("Enter Name Below:", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 40, arcade.color.RED, 15,
+        arcade.draw_text("Enter Initials Below:", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 40, arcade.color.RED, 15,
                          anchor_x="center", anchor_y="center")
         arcade.draw_rectangle_filled(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 85, 200, 30, arcade.color.WHITE)
         self.ui_manager_end.draw()
         arcade.draw_text("GAME OVER", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.75, arcade.color.RED, 50,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
 
+    def limit_text_length(self):
+        if len(self.text_box.text) > 3:
+            self.text_box.text = self.text_box.text[:3]
+
     def leaderboard_button_click(self, event):
+        self.limit_text_length()
+        self.text_input = self.text_box.text
+        load_database(self.text_input, self.window.shared_score)
+        self.text_box.text = ""
         self.ui_manager_end.disable()
         leaderboard_view = LeaderboardView(self)
         self.window.show_view(leaderboard_view)
@@ -188,7 +201,6 @@ class GameOverView(arcade.View):
     def quit_button_click(self, event):
         self.ui_manager_end.disable()
         arcade.close_window()
-
 
     def restart_button_click(self, event):
         """ If the user presses the mouse button, re-start the game. """
@@ -201,12 +213,13 @@ class GameOverView(arcade.View):
 class LeaderboardView(arcade.View):
     def __init__(self, game_view):
         super().__init__()
+        self.ui_manager_leaderboard = arcade.gui.UIManager()
+        self.star_list = []
+
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
-        self.ui_manager_leaderboard = arcade.gui.UIManager()
         self.ui_manager_leaderboard.enable()
         self.window.set_mouse_visible(True)
-        self.star_list = []
         # Generate star positions
         for _ in range(50):  # Adjust the passed range to change the amount of stars
             x = random.randint(0, constant.SCREEN_WIDTH)
@@ -226,16 +239,112 @@ class LeaderboardView(arcade.View):
 
     def on_draw(self):
         self.clear()
+        top_five = query_database()
         for star in self.star_list:
             x, y = star
             arcade.draw_circle_filled(x, y, 2, arcade.color.WHITE)
         self.ui_manager_leaderboard.draw()
-        arcade.draw_text("LEADERBOARD", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.1, arcade.color.RED, 50,
-                         anchor_x="center", anchor_y="center", font_name="Ozone")
+        arcade.draw_text("HIGH SCORE", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.05, arcade.color.RED, 20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text(str(top_five[0][1]), constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.1, arcade.color.WHITE, 20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text("3GDOWN", constant.SCREEN_WIDTH // 2 - 245, constant.SCREEN_HEIGHT // 1.05, arcade.color.YELLOW,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text(str(top_five[0][1]), constant.SCREEN_WIDTH // 2 - 245, constant.SCREEN_HEIGHT // 1.1, arcade.color.WHITE,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text("-BEST 5-", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.25, arcade.color.RED,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text("RANK  SCORE  STAGE  INI", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.37,
+                         arcade.color.WHITE,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text("NO.1", constant.SCREEN_WIDTH // 2 - 255, constant.SCREEN_HEIGHT // 2 + 125,
+                         arcade.color.RED,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text("NO.2", constant.SCREEN_WIDTH // 2 - 255, constant.SCREEN_HEIGHT // 2 + 75,
+                         arcade.color.BARBIE_PINK,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text("NO.3", constant.SCREEN_WIDTH // 2 - 255, constant.SCREEN_HEIGHT // 2 + 25,
+                         arcade.color.YELLOW,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text("NO.4", constant.SCREEN_WIDTH // 2 - 255, constant.SCREEN_HEIGHT // 2 - 25,
+                         arcade.color.GREEN,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text("NO.5", constant.SCREEN_WIDTH // 2 - 255, constant.SCREEN_HEIGHT // 2 - 75,
+                         arcade.color.CYAN,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text(str(top_five[0][1]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 + 125,
+                         arcade.color.RED,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text(str(top_five[1][1]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 + 75,
+                         arcade.color.BARBIE_PINK,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text(str(top_five[2][1]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 + 25,
+                         arcade.color.YELLOW,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text(str(top_five[3][1]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 - 25,
+                         arcade.color.GREEN,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text(str(top_five[4][1]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 - 75,
+                         arcade.color.CYAN,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text("10", constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 + 125,
+                         arcade.color.RED,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text("5", constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 + 75,
+                         arcade.color.BARBIE_PINK,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text("5", constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 + 25,
+                         arcade.color.YELLOW,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text("5", constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 - 25,
+                         arcade.color.GREEN,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text("5", constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 - 75,
+                         arcade.color.CYAN,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text(top_five[0][0], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 + 125,
+                         arcade.color.RED,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text(top_five[1][0], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 + 75,
+                         arcade.color.BARBIE_PINK,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text(top_five[2][0], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 + 25,
+                         arcade.color.YELLOW,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text(top_five[3][0], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 - 25,
+                         arcade.color.GREEN,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+        arcade.draw_text(top_five[4][0], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 - 75,
+                         arcade.color.CYAN,
+                         20,
+                         anchor_x="center", anchor_y="center", font_name="Emulogic")
+
     def quit_button_click(self, event):
         self.ui_manager_leaderboard.disable()
         arcade.close_window()
-
 
     def restart_button_click(self, event):
         """ If the user presses the mouse button, re-start the game. """
@@ -485,7 +594,7 @@ class GameView(arcade.View):
 
             if bullet.bottom > constant.SCREEN_HEIGHT:
                 bullet.remove_from_sprite_lists()
-
+        self.window.shared_score = self.score
         # Update stars to appear as scrolling
         for star in self.star_list:
             star.update()
