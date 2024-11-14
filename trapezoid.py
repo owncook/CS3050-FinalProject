@@ -91,7 +91,6 @@ class Trapezoid():
         # Setting the bounds of the trapezoid
         self.left = (constant.SCREEN_WIDTH // 2 - self.largest_gap)
         self.right = (constant.SCREEN_WIDTH // 2 + self.largest_gap)
-        self.direction = constant.TRAPEZOID_SPEED
 
         print(self.right, self.left)
 
@@ -118,8 +117,7 @@ class Trapezoid():
         self.left += self.direction
         self.right += self.direction
 
-        
-        # For all enemies in list
+        # For all enemies
         for enemy in self.trapezoid_sprites:
         
             # Move home_x left/right 1

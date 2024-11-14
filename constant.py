@@ -13,7 +13,7 @@ BULLET_SPEED = 10
 MAX_BULLETS = 2
 
 # --- Trapezoid ---
-TRAPEZOID_SPEED = 1 # Need this number to divide evenly into 848 and 152 so the amount of steps taken will be 0 at some point
+TRAPEZOID_SPEED = 2 # Need this number to divide evenly into 848 and 152 so the amount of steps taken will be 0 at some point
 # if u wanna mess around, 1,2,4, and 8 work
 
 
@@ -22,7 +22,7 @@ TRAPEZOID_SPEED = 1 # Need this number to divide evenly into 848 and 152 so the 
 but the enemy needs to be 48 px for the spacing to be the same as before"""
 ENEMY_SCALE = 1.5
 SPRTIE_WIDTH = 32 # Got from the image
-ENEMY_WIDTH = ENEMY_SCALE * SPRTIE_WIDTH # Needs to be 48 for trapezoid to work
+ENEMY_WIDTH = ENEMY_SCALE * SPRTIE_WIDTH # Needs to be 48 for trapezoid to look the same
 ENEMY_SPACING_X = 25  # Horizontal spacing between enemies
 ENEMY_SPACING_Y = 50  # Vertical spacing between rows
 ENEMY_SPAWN_INTERVAL = 3
