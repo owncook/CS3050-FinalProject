@@ -1,4 +1,5 @@
 import arcade
+
 # --- Constants ---
 
 # --- Screen ---
@@ -8,25 +9,31 @@ SCREEN_TITLE = "Galaga Game Window"
 
 # --- Player ---
 PLAYER_SCALE = 2
-BULLET_SPEED = 10
+BULLET_SPEED = 5
 MAX_BULLETS = 2
 
+# --- Trapezoid ---
+TRAPEZOID_SPEED = 1 # Need this number to divide evenly into 848 and 152 so the amount of steps taken will be 0 at some point
+# if u wanna mess around, 1,2,4, and 8 work
+
+
 # --- Enemies --- 
+"""For jason mode have an if statement and change the sprite width,
+but the enemy needs to be 48 px for the spacing to be the same as before"""
 ENEMY_SCALE = 1.5
-ENEMY_SPACING_X = 25  # Horizontal spacing between enemies (previously 40)
+SPRTIE_WIDTH = 32 # Got from the image
+ENEMY_WIDTH = ENEMY_SCALE * SPRTIE_WIDTH # Needs to be 48 for trapezoid to look the same
+ENEMY_SPACING_X = 25  # Horizontal spacing between enemies
 ENEMY_SPACING_Y = 50  # Vertical spacing between rows
 ENEMY_SPAWN_INTERVAL = 3
 ATTACK_INTERVAL = 4
 MARGIN_X = 100
 MARGIN_Y = 100
 ENEMY_OFFSCREEN_MARGIN = 30
-ENEMY_SPEED = 4
-
-
-BULLET_SPEED = 5
+ENEMY_SPEED = 5
 ENEMY_BULLET_SPEED = 8
 
-## --- Game --- 
+# --- Game --- 
 SCORE = 10
 
 # --- Stars ---
@@ -34,12 +41,14 @@ STAR_COUNT = 100
 STAR_SPEED = 2
 TWINKLE_SPEED = 0.1
 
+# --- Planets ---
+PLANET_SPEED = STAR_SPEED
+PLANET_SCALE = 2
+
 # --- Database ---
 NUM_HIGHSCORES = 5
 
-
-
-# --- Explosions
+# --- Explosions ---
 # How fast the particle will accelerate down. Make 0 if not desired
 PARTICLE_GRAVITY = 0.05
 

@@ -6,8 +6,12 @@ from arcade.gui import UIManager
 
 import constant
 from constant import *
+
 from database import *
-import math
+
+
+from planet import Planet
+
 from trapezoid import Trapezoid
 from star import Star
 
@@ -396,20 +400,15 @@ class GameView(arcade.View):
 
         self.frame_count = 0
 
-        # TODO unused code/delete
-        # self.shoot_timer = .1
-        # self.shoot_interval = .01
 
         # Enemy trapezoid creation and tracking variables
         self.enemy_trapezoid = Trapezoid()
         self.stage_counter = 1
 
+
+
     def setup(self):
         """Set up the game variables and objects"""
-        # Initialize player sprite and sprite lists
-        # self.player_sprite = arcade.Sprite("sources/player.png", scale=constant.PLAYER_SCALE)
-        # self.player_sprite.center_x = constant.SCREEN_WIDTH // 2
-        # self.player_sprite.center_y = 50
 
         # Initialize sprite lists
         self.enemy_list = arcade.SpriteList()
@@ -417,13 +416,18 @@ class GameView(arcade.View):
         self.explosions_list = arcade.SpriteList()
         self.hearts = arcade.SpriteList()
 
+        self.planet_sprite_list = arcade.SpriteList()
+        self.planet_tracker = 0
+
         # Score
         self.score = 0
+
 
         # Setup stars
         for _ in range(constant.STAR_COUNT):
             star = Star()
             self.star_list.append(star)
+
 
     def update_animation(self, delta_time):
         # Increment animation timer
@@ -442,6 +446,10 @@ class GameView(arcade.View):
         # Draw stars on background
         for star in self.star_list:
             star.draw()
+
+        for planet in self.planet_sprite_list:
+            planet.draw()
+
         # Draw the player
         self.player_sprite.draw()
 
@@ -456,6 +464,7 @@ class GameView(arcade.View):
         # ---Score ---
         output = f"Score: {self.score}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+
         # ---Lives ---
         for i in range(self.lives):
             x_position = 150 + i * 30
@@ -556,6 +565,8 @@ class GameView(arcade.View):
 
         if self.enemy_trapezoid.check_trapezoid_empty():
             self.stage_counter += 1
+            if self.stage_counter % 3 == 1: #every third stage the player earns a life
+                self.lives += 1 
             self.enemy_trapezoid.populate_rows([4, 8, 10])
 
         for bullet in self.bullet_list:
@@ -579,8 +590,6 @@ class GameView(arcade.View):
                 smoke.position = enemy.position
                 self.explosions_list.append(smoke)
 
-                self.score += 1
-
                 arcade.play_sound(self.hit_sound)
 
             if bullet.bottom > constant.SCREEN_HEIGHT:
@@ -589,3 +598,28 @@ class GameView(arcade.View):
         # Update stars to appear as scrolling
         for star in self.star_list:
             star.update()
+
+        match self.planet_tracker:
+            case 0:
+                rand_key = random.randint(0, 100) 
+                if rand_key == 1:
+                    current_planet = Planet()
+                    self.planet_sprite_list.append(current_planet)
+                    self.planet_tracker += 1
+            case 1:
+                rand_key = random.randint(0, 1000) 
+                if rand_key == 1:
+                    current_planet = Planet()
+                    self.planet_sprite_list.append(current_planet)
+                    self.planet_tracker += 1
+        
+        for planet in self.planet_sprite_list:
+            planet.on_update()
+
+            if planet.center_y < 0:
+                planet.remove_from_sprite_lists()
+                self.planet_tracker -=1
+
+
+        
+
