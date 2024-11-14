@@ -12,7 +12,7 @@ BULLET_SPEED = 5
 MAX_BULLETS = 2
 
 # --- Enemies --- 
-ENEMY_SCALE = 1.5
+ENEMY_SCALE = 1.5 # 32*1.5 = 48
 ENEMY_SPACING_X = 25  # Horizontal spacing between enemies (previously 40)
 ENEMY_SPACING_Y = 50  # Vertical spacing between rows
 ENEMY_SPAWN_INTERVAL = 3
