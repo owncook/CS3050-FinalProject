@@ -13,7 +13,7 @@ BULLET_SPEED = 5
 MAX_BULLETS = 2
 
 # --- Trapezoid ---
-TRAPEZOID_SPEED = 2 # Need this number to divide evenly into 848 and 152 so the amount of steps taken will be 0 at some point
+TRAPEZOID_SPEED = 1 # Need this number to divide evenly into 848 and 152 so the amount of steps taken will be 0 at some point
 # if u wanna mess around, 1,2,4, and 8 work
 
 
