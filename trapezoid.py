@@ -23,14 +23,15 @@ class Trapezoid():
 
         # Populate rows with enemies
         self.num_enemies = [4, 8, 10]
-        self.populate_rows([4, 8, 10])
+        self.populate_rows(self.num_enemies)
 
         # Moving trapezoid
         # TODO: change form hard code
 
-        
-        self.left = (constant.SCREEN_WIDTH - 9*(constant.ENEMY_SPACING_X / 2 + ))
-        self.right = 
+        self.largest_gap = 9*(constant.ENEMY_SPACING_X / 2 + constant.ENEMY_WIDTH / 2)
+        self.left = (constant.SCREEN_WIDTH / 2 - self.largest_gap) #- constant.ENEMY_WIDTH / 2)
+        self.right = (constant.SCREEN_WIDTH / 2 + self.largest_gap) #+ constant.ENEMY_WIDTH / 2)
+        print(self.right, self.left)
         self.direction = -1
 
 
@@ -51,7 +52,6 @@ class Trapezoid():
             image_paths = ['sources/enemies/' + enemy_type + '.png']
         
         sprite_width = arcade.Sprite(image_paths[0], constant.ENEMY_SCALE, 0, 0).width
-        print(sprite_width)
         group_delay = 0
 
         for i in range(int(num_enemies / 2)):
@@ -74,16 +74,16 @@ class Trapezoid():
             right_sprite.start_delay = group_delay
 
 
-            if left_sprite.home_x - sprite_width / 2 < self.left:
-                print('reached')
-                self.left = left_sprite.home_x - sprite_width / 2
-                print(self.left)
+            # if left_sprite.home_x - sprite_width / 2 < self.left:
+            #     print('reached')
+            #     self.left = left_sprite.home_x - sprite_width / 2
+            #     print(self.left)
             
 
-            if right_sprite.home_x + sprite_width / 2 > self.right:
-                print('reached')
-                self.right = right_sprite.home_x + sprite_width / 2
-                print(self.right)
+            # if right_sprite.home_x + sprite_width / 2 > self.right:
+            #     print('reached')
+            #     self.right = right_sprite.home_x + sprite_width / 2
+            #     print(self.right)
 
             group_delay += 1
 
@@ -99,10 +99,10 @@ class Trapezoid():
         num_butterflies = enemies_per_row[1]
         num_bees = enemies_per_row[2]
 
-        # Reset movement
-        self.left = float('inf') # Coordinate of the smallest center_x
-        self.right = float('-inf') # Coordinate of largest center_x
-
+        self.largest_gap = 9*(constant.ENEMY_SPACING_X / 2 + constant.ENEMY_WIDTH / 2)
+        self.left = (constant.SCREEN_WIDTH - self.largest_gap ) #- constant.ENEMY_WIDTH / 2
+        self.right = (constant.SCREEN_WIDTH + self.largest_gap) #+ constant.ENEMY_WIDTH / 2)
+        self.direction = -1
 
         home_y = constant.SCREEN_HEIGHT - constant.MARGIN_Y
         self.populate_row(num_boss, 'evilthing', home_y)
