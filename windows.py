@@ -456,6 +456,8 @@ class GameView(arcade.View):
 
         if self.enemy_trapezoid.check_trapezoid_empty():
             self.stage_counter += 1
+            if self.stage_counter % 3 == 1: #every third stage the player earns a life
+                self.lives += 1 
             self.enemy_trapezoid.populate_rows([4, 8, 10])
 
         for bullet in self.bullet_list:
@@ -478,8 +480,6 @@ class GameView(arcade.View):
                 smoke = Smoke(50)
                 smoke.position = enemy.position
                 self.explosions_list.append(smoke)
-
-                self.score += 1
 
                 arcade.play_sound(self.hit_sound)
 
