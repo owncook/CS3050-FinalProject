@@ -22,13 +22,15 @@ class Trapezoid():
         self.enemy_bullet_list = arcade.SpriteList()
 
         # Populate rows with enemies
+        self.num_enemies = [4, 8, 10]
         self.populate_rows([4, 8, 10])
 
         # Moving trapezoid
         # TODO: change form hard code
 
-        self.left = 10000 # float('inf') # Coordinate of the smallest center_x
-        self.right = -10000 # float('-inf') # Coordinate of largest center_x
+        
+        self.left = (constant.SCREEN_WIDTH - 9*(constant.ENEMY_SPACING_X / 2 + ))
+        self.right = 
         self.direction = -1
 
 
@@ -49,7 +51,7 @@ class Trapezoid():
             image_paths = ['sources/enemies/' + enemy_type + '.png']
         
         sprite_width = arcade.Sprite(image_paths[0], constant.ENEMY_SCALE, 0, 0).width
-
+        print(sprite_width)
         group_delay = 0
 
         for i in range(int(num_enemies / 2)):
