@@ -373,6 +373,8 @@ class GameView(arcade.View):
         self.player_sprite.scale = constant.PLAYER_SCALE
         self.player_sprite.center_x = constant.SCREEN_WIDTH // 2
         self.player_sprite.center_y = 50
+        self.home_x = self.player_sprite.center_x
+        self.home_y = self.player_sprite.center_y
 
         # Set background color
         arcade.set_background_color(arcade.color.BLACK)
@@ -523,6 +525,12 @@ class GameView(arcade.View):
         """Update game logic"""
         # Update player, enemies, bullets
         self.player_sprite.update()
+        # Check if enemy is attacking and update with the player's current position
+        for enemy in self.enemy_trapezoid.trapezoid_sprites:
+            if enemy.is_attacking:
+                enemy.update(delta_time, self.player_sprite.center_x, self.player_sprite.center_y)
+            else:
+                enemy.update(delta_time, self.home_x, self.home_y)
         self.bullet_list.update()
         self.enemy_list.update()
         self.enemy_trapezoid.enemy_bullet_list.update()
