@@ -373,6 +373,13 @@ class GameView(arcade.View):
         self.player_sprite.scale = constant.PLAYER_SCALE
         self.player_sprite.center_x = constant.SCREEN_WIDTH // 2
         self.player_sprite.center_y = 50
+        self.home_x = self.player_sprite.center_x
+        self.home_y = self.player_sprite.center_y
+
+        self.invincibility_timer = 0  # Timer to track invincibility duration
+        self.is_invincible = False  # Flag to check if player is currently invincible
+        self.invincibility_duration = 1.0  # Duration of invincibility in seconds
+
 
         # Set background color
         arcade.set_background_color(arcade.color.BLACK)
@@ -521,8 +528,23 @@ class GameView(arcade.View):
 
     def on_update(self, delta_time):
         """Update game logic"""
-        # Update player, enemies, bullets
         self.player_sprite.update()
+
+        # Update invincibility timer
+        if self.is_invincible:
+            self.invincibility_timer += delta_time
+            if self.invincibility_timer >= self.invincibility_duration:
+                # End invincibility period
+                self.is_invincible = False
+                self.invincibility_timer = 0
+
+        # Check if enemy is attacking and update with the player's current position
+        for enemy in self.enemy_trapezoid.trapezoid_sprites:
+            if enemy.is_attacking:
+                enemy.update(delta_time, self.player_sprite.center_x, self.player_sprite.center_y)
+            else:
+                enemy.update(delta_time, self.home_x, self.home_y)
+
         self.bullet_list.update()
         self.enemy_list.update()
         self.enemy_trapezoid.enemy_bullet_list.update()
@@ -531,11 +553,7 @@ class GameView(arcade.View):
         self.time_elapsed += delta_time
 
         self.explosions_list.update()
-
         self.update_animation(delta_time)
-
-        # Update bullets and check for collisions
-        self.bullet_list.update()
 
         # Keep the player on the screen
         if self.player_sprite.left < 0:
@@ -543,44 +561,46 @@ class GameView(arcade.View):
         elif self.player_sprite.right > constant.SCREEN_WIDTH:
             self.player_sprite.right = constant.SCREEN_WIDTH
 
-        # Handle collision detection and life reduction
-        for enemy_bullet in self.enemy_trapezoid.enemy_bullet_list:
-            if arcade.check_for_collision(enemy_bullet, self.player_sprite):
-                enemy_bullet.remove_from_sprite_lists()
-                self.lives -= 1
-                print("Lives: " + str(self.lives))
-                if self.lives <= 0:
-                    game_over_view = GameOverView()
-                    self.window.show_view(game_over_view)
+        # Collision detection for enemy bullets
+        if not self.is_invincible:
+            for enemy_bullet in self.enemy_trapezoid.enemy_bullet_list:
+                if arcade.check_for_collision(enemy_bullet, self.player_sprite):
+                    enemy_bullet.remove_from_sprite_lists()
+                    self.lives -= 1
+                    self.is_invincible = True  # Enable invincibility
+                    print("Lives: " + str(self.lives))
+                    if self.lives <= 0:
+                        game_over_view = GameOverView()
+                        self.window.show_view(game_over_view)
 
-        for enemy in self.enemy_trapezoid.trapezoid_sprites:
-            if arcade.check_for_collision(enemy, self.player_sprite):
-                enemy.remove_from_sprite_lists()
-                self.lives -= 1
-                # print("Lives: " + str(self.lives))
-                # Check if lives reach zero
-                if self.lives <= 0:
-                    game_over_view = GameOverView()
-                    self.window.show_view(game_over_view)
+            # Collision detection for enemies
+            for enemy in self.enemy_trapezoid.trapezoid_sprites:
+                if arcade.check_for_collision(enemy, self.player_sprite):
+                    enemy.remove_from_sprite_lists()
+                    self.lives -= 1
+                    self.is_invincible = True  # Enable invincibility
+                    if self.lives <= 0:
+                        game_over_view = GameOverView()
+                        self.window.show_view(game_over_view)
 
+        # Stage and score updates
         if self.enemy_trapezoid.check_trapezoid_empty():
             self.stage_counter += 1
-            if self.stage_counter % 3 == 1: #every third stage the player earns a life
-                self.lives += 1 
+            if self.stage_counter % 3 == 1:  # Every third stage the player earns a life
+                self.lives += 1
             self.enemy_trapezoid.populate_rows([4, 8, 10])
 
+        # Update bullets, planets, and stars
         for bullet in self.bullet_list:
-
             enemy_list = self.enemy_trapezoid.trapezoid_sprites
             enemies_hit = arcade.check_for_collision_with_list(bullet, enemy_list)
 
-            if (len(enemies_hit) > 0):
+            if len(enemies_hit) > 0:
                 bullet.remove_from_sprite_lists()
 
             for enemy in enemies_hit:
                 enemy.remove_from_sprite_lists()
                 self.score += constant.SCORE * (self.stage_counter / 10)
-                # Make an explosion
                 for i in range(PARTICLE_COUNT):
                     particle = Particle(self.explosions_list)
                     particle.position = enemy.position
@@ -594,32 +614,28 @@ class GameView(arcade.View):
 
             if bullet.bottom > constant.SCREEN_HEIGHT:
                 bullet.remove_from_sprite_lists()
+
         self.window.shared_score = self.score
-        # Update stars to appear as scrolling
+
         for star in self.star_list:
             star.update()
 
         match self.planet_tracker:
             case 0:
-                rand_key = random.randint(0, 100) 
+                rand_key = random.randint(0, 100)
                 if rand_key == 1:
                     current_planet = Planet()
                     self.planet_sprite_list.append(current_planet)
                     self.planet_tracker += 1
             case 1:
-                rand_key = random.randint(0, 1000) 
+                rand_key = random.randint(0, 1000)
                 if rand_key == 1:
                     current_planet = Planet()
                     self.planet_sprite_list.append(current_planet)
                     self.planet_tracker += 1
-        
+
         for planet in self.planet_sprite_list:
             planet.on_update()
-
             if planet.center_y < 0:
                 planet.remove_from_sprite_lists()
-                self.planet_tracker -=1
-
-
-        
-
+                self.planet_tracker -= 1
