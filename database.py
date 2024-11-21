@@ -8,7 +8,8 @@ import time
 # score: score of user
 def load_database(username, stage, score):
     doc_ref = db.collection('scores').document('Player' + str(time.time()))
-    doc_ref.set({'username': username, 'stage': stage, 'score' : score})
+    doc_ref.set({'username': username, 'stage': stage, 'score': score})
+
 
 # Gets top 5 scores from database
 # returns: list of tuples where
@@ -30,5 +31,5 @@ def query_database():
     for doc in top_docs:
         data = doc.to_dict()
         top_scores.append((data['username'], data['stage'], data['score']))
-    
+
     return top_scores

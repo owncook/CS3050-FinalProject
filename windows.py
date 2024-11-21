@@ -192,7 +192,7 @@ class GameOverView(arcade.View):
     def leaderboard_button_click(self, event):
         self.limit_text_length()
         self.text_input = self.text_box.text
-        load_database(self.text_input, self.window.shared_score)
+        load_database(self.text_input, self.window.shared_stage,self.window.shared_score)
         self.text_box.text = ""
         self.ui_manager_end.disable()
         leaderboard_view = LeaderboardView(self)
@@ -281,63 +281,63 @@ class LeaderboardView(arcade.View):
                          arcade.color.CYAN,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text(str(top_five[0][1]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 + 125,
+        arcade.draw_text(str(top_five[0][0]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 + 125,
                          arcade.color.RED,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text(str(top_five[1][1]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 + 75,
+        arcade.draw_text(str(top_five[1][0]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 + 75,
                          arcade.color.BARBIE_PINK,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text(str(top_five[2][1]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 + 25,
+        arcade.draw_text(str(top_five[2][0]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 + 25,
                          arcade.color.YELLOW,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text(str(top_five[3][1]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 - 25,
+        arcade.draw_text(str(top_five[3][0]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 - 25,
                          arcade.color.GREEN,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text(str(top_five[4][1]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 - 75,
+        arcade.draw_text(str(top_five[4][0]), constant.SCREEN_WIDTH // 2 - 75, constant.SCREEN_HEIGHT // 2 - 75,
                          arcade.color.CYAN,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text("10", constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 + 125,
+        arcade.draw_text(str(top_five[0][1]), constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 + 125,
                          arcade.color.RED,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text("5", constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 + 75,
+        arcade.draw_text(str(top_five[1][1]), constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 + 75,
                          arcade.color.BARBIE_PINK,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text("5", constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 + 25,
+        arcade.draw_text(str(top_five[2][1]), constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 + 25,
                          arcade.color.YELLOW,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text("5", constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 - 25,
+        arcade.draw_text(str(top_five[3][1]), constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 - 25,
                          arcade.color.GREEN,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text("5", constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 - 75,
+        arcade.draw_text(str(top_five[4][1]), constant.SCREEN_WIDTH // 2 + 107, constant.SCREEN_HEIGHT // 2 - 75,
                          arcade.color.CYAN,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text(top_five[0][0], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 + 125,
+        arcade.draw_text(top_five[0][2], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 + 125,
                          arcade.color.RED,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text(top_five[1][0], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 + 75,
+        arcade.draw_text(top_five[1][2], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 + 75,
                          arcade.color.BARBIE_PINK,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text(top_five[2][0], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 + 25,
+        arcade.draw_text(top_five[2][2], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 + 25,
                          arcade.color.YELLOW,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text(top_five[3][0], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 - 25,
+        arcade.draw_text(top_five[3][2], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 - 25,
                          arcade.color.GREEN,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text(top_five[4][0], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 - 75,
+        arcade.draw_text(top_five[4][2], constant.SCREEN_WIDTH // 2 + 270, constant.SCREEN_HEIGHT // 2 - 75,
                          arcade.color.CYAN,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
@@ -629,6 +629,7 @@ class GameView(arcade.View):
                 bullet.remove_from_sprite_lists()
 
         self.window.shared_score = int(self.score)
+        self.window.shared_stage = int(self.stage_counter)
 
         for star in self.star_list:
             star.update()
