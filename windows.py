@@ -469,7 +469,7 @@ class GameView(arcade.View):
 
         # Put the text on the screen.
         # ---Score ---
-        output = f"Score: {self.score}"
+        output = f"Score: {int(self.score)}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
         # ---Lives ---
@@ -628,7 +628,7 @@ class GameView(arcade.View):
             if bullet.bottom > constant.SCREEN_HEIGHT:
                 bullet.remove_from_sprite_lists()
 
-        self.window.shared_score = self.score
+        self.window.shared_score = int(self.score)
 
         for star in self.star_list:
             star.update()
