@@ -4,3 +4,4 @@ venv/
 venv_new/
 __pycache__/
 keys/
+.idea
