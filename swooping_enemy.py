@@ -56,7 +56,7 @@ class Swooping_Enemy(arcade.Sprite):
         
         # randomly decide whether to apply an offset
         # set the chance of an offset at 60% so the enemies don't always hit the player directly (makes gameplay too difficult)
-        should_offset = random.random() < 0.60  
+        should_offset = True  
         # this offset value determines whether or not the enemy swoops directly at the player or if they swoop a little to the left/right 
         self.target_offset_x = random.uniform(-250, 250) if should_offset else 0  
 
