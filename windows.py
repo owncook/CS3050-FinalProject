@@ -246,12 +246,12 @@ class LeaderboardView(arcade.View):
         self.ui_manager_leaderboard.draw()
         arcade.draw_text("HIGH SCORE", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.05, arcade.color.RED, 20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text(str(top_five[0][1]), constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.1, arcade.color.WHITE, 20,
+        arcade.draw_text(str(top_five[0][2]), constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.1, arcade.color.WHITE, 20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
         arcade.draw_text("3GDOWN", constant.SCREEN_WIDTH // 2 - 245, constant.SCREEN_HEIGHT // 1.05, arcade.color.YELLOW,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text(str(top_five[0][1]), constant.SCREEN_WIDTH // 2 - 245, constant.SCREEN_HEIGHT // 1.1, arcade.color.WHITE,
+        arcade.draw_text(str(top_five[0][2]), constant.SCREEN_WIDTH // 2 - 245, constant.SCREEN_HEIGHT // 1.1, arcade.color.WHITE,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
         arcade.draw_text("-BEST 5-", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.25, arcade.color.RED,
