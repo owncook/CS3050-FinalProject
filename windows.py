@@ -569,6 +569,17 @@ class GameView(arcade.View):
                 if arcade.check_for_collision(enemy_bullet, self.player_sprite):
                     enemy_bullet.remove_from_sprite_lists()
                     self.lives -= 1
+
+                    for i in range(PARTICLE_COUNT):
+                        particle = Particle(self.explosions_list)
+                        particle.position = self.player_sprite.position
+                        self.explosions_list.append(particle)
+
+                        smoke = Smoke(50)
+                        smoke.position = self.player_sprite.position
+                        self.explosions_list.append(smoke)
+
+                        arcade.play_sound(self.hit_sound)
                     self.is_invincible = True  # Enable invincibility
                     print("Lives: " + str(self.lives))
                     if self.lives <= 0:
