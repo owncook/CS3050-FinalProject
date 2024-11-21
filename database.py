@@ -13,7 +13,8 @@ def load_database(username, stage, score):
 # Gets top 5 scores from database
 # returns: list of tuples where
 # tuple[0] is username
-# tuple[1] is score
+# tuple[1] is stage
+# tuple[2] is score
 def query_database():
     top_scores = []
 
