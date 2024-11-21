@@ -475,7 +475,9 @@ class GameView(arcade.View):
         # ---Lives ---
         for i in range(self.lives):
             x_position = 150 + i * 30
-            arcade.draw_texture_rectangle(x_position, 20, 40, 40, self.heart_texture)
+            y_position = 32
+
+            arcade.draw_texture_rectangle(x_position, y_position, 40, 40, self.heart_texture)
 
         # ---Stage ---
         output = f"Stage: {self.stage_counter}"
