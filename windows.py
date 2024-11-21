@@ -469,13 +469,15 @@ class GameView(arcade.View):
 
         # Put the text on the screen.
         # ---Score ---
-        output = f"Score: {self.score}"
+        output = f"Score: {int(self.score)}"
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
         # ---Lives ---
         for i in range(self.lives):
             x_position = 150 + i * 30
-            arcade.draw_texture_rectangle(x_position, 20, 40, 40, self.heart_texture)
+            y_position = 32
+
+            arcade.draw_texture_rectangle(x_position, y_position, 40, 40, self.heart_texture)
 
         # ---Stage ---
         output = f"Stage: {self.stage_counter}"
@@ -567,6 +569,17 @@ class GameView(arcade.View):
                 if arcade.check_for_collision(enemy_bullet, self.player_sprite):
                     enemy_bullet.remove_from_sprite_lists()
                     self.lives -= 1
+
+                    for i in range(PARTICLE_COUNT):
+                        particle = Particle(self.explosions_list)
+                        particle.position = self.player_sprite.position
+                        self.explosions_list.append(particle)
+
+                        smoke = Smoke(50)
+                        smoke.position = self.player_sprite.position
+                        self.explosions_list.append(smoke)
+
+                        arcade.play_sound(self.hit_sound)
                     self.is_invincible = True  # Enable invincibility
                     print("Lives: " + str(self.lives))
                     if self.lives <= 0:
@@ -615,7 +628,7 @@ class GameView(arcade.View):
             if bullet.bottom > constant.SCREEN_HEIGHT:
                 bullet.remove_from_sprite_lists()
 
-        self.window.shared_score = self.score
+        self.window.shared_score = int(self.score)
 
         for star in self.star_list:
             star.update()
