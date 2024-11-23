@@ -39,6 +39,7 @@ class StartView(arcade.View):
             arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", align_y=-150, child=start_button))
         start_button.on_click = self.start_button_click
 
+# TODO: update high score using query(cannot do until I am out of the airport)
     def on_draw(self):
         """ Draw this view """
         self.clear()
