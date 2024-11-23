@@ -33,6 +33,11 @@ ENEMY_OFFSCREEN_MARGIN = 30
 ENEMY_SPEED = 5
 ENEMY_BULLET_SPEED = 8
 
+# Constants for Bézier curve calculations
+MAX_SWOOP_DURATION = 3  # Maximum time for swoop progression
+BEZIER_POWER = 2        # Power for quadratic Bézier curve calculation
+BEZIER_T_PARAMETER = 1
+
 # --- Game --- 
 SCORE = 10
 
