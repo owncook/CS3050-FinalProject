@@ -9,27 +9,29 @@ class Swooping_Enemy(arcade.Sprite):
     def __init__(self, image_paths, scale, home_x, home_y):
         super().__init__(image_paths[0], scale)
         
-        # -- Animation setup
+        # Animation setup.
         self.frames = [arcade.load_texture(img) for img in image_paths]
         self.current_frame = 0
         self.animation_timer = 0.0
         self.animation_speed = 0.5
 
-        # Initial spawn and home positions
+        # Initialize spawn positions for the enemies.
         self.start_x = constant.SCREEN_WIDTH / 2
         self.start_y = constant.SCREEN_HEIGHT + constant.ENEMY_OFFSCREEN_MARGIN
+
+        # Initialize home positions for the enemies (where they return to in the trapezoid).
         self.home_x = home_x
         self.home_y = home_y
 
-        # Center position for movement
+        # Initialize the center positions (x and y) of the enemy to use in movement calculations.
         self.center_x = self.start_x
         self.center_y = self.start_y
 
-        # Target position for attacking the player
+        # Target position for attacking the player--initially set to none (so that we can dynamically update the values).
         self.target_x = None
         self.target_y = None
 
-        # Initialization of timers and state flags
+        # Initialization of timers and state flags.
         self.swoop_timer = 0
         self.frame_count = 0
         self.enemy_bullet_list = arcade.SpriteList()
@@ -47,20 +49,30 @@ class Swooping_Enemy(arcade.Sprite):
             self.texture = self.frames[self.current_frame]
 
     def attack(self, enemy, player_x, player_y):
-        """Initiate an attack towards the player's position, sometimes slightly offset."""
+        """Initiate an attack towards the player's position, slightly offset. We offset the player's 
+        position so that the game is playable but the enemy still swoops towards the player dynamically. """
+        # If the player is spawning, then do not attack.
         if self.is_spawning:
             return
+        
+        # Set self.is_attacking to True.
         self.is_attacking = True
+
+        # Initialize the frame count and swoop timer to track the enemies position over time. 
         self.frame_count = 0
         self.swoop_timer = 0
         
-        # randomly decide whether to apply an offset
-        # set the chance of an offset at 60% so the enemies don't always hit the player directly (makes gameplay too difficult)
+        # Apply an offset to the final target position of the enemy. 
+        # We add this offset so that the enemies don't always hit the player directly
+        # which makes the game more playable but allows us to swoop the enemies towards the players
+        # as the player's position dynamically updates. 
         should_offset = True  
-        # this offset value determines whether or not the enemy swoops directly at the player or if they swoop a little to the left/right 
+
+        # This offset value makes it so that the enemy's final target x-position is a little to the left or right
+        # of the player. 
         self.target_offset_x = random.uniform(-250, 250) if should_offset else 0  
 
-        # initial target calculation with potential offset
+        # Initial target calculation with offset value accounted for. 
         self.target_x = player_x + self.target_offset_x
         self.target_y = player_y
         self.attack_bullet_timer = time.time()
