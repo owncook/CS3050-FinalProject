@@ -2,6 +2,7 @@ import arcade
 import constant
 from windows import StartView
 
+
 def main():
     """ Main function """
 
