@@ -615,14 +615,26 @@ class GameView(arcade.View):
                         self.window.show_view(game_over_view)
 
             # Collision detection for enemies
-            for enemy in self.enemy_trapezoid.trapezoid_sprites:
-                if arcade.check_for_collision(enemy, self.player_sprite):
-                    enemy.remove_from_sprite_lists()
-                    self.lives -= 1
-                    self.is_invincible = True  # Enable invincibility
-                    if self.lives <= 0:
-                        game_over_view = GameOverView()
-                        self.window.show_view(game_over_view)
+            if not self.is_invincible:
+                for enemy in self.enemy_trapezoid.trapezoid_sprites:
+                    if arcade.check_for_collision(enemy, self.player_sprite):
+                        enemy.remove_from_sprite_lists()
+                        self.lives -= 1
+                        for i in range(PARTICLE_COUNT):
+                            particle = Particle(self.explosions_list)
+                            particle.position = self.player_sprite.position
+                            self.explosions_list.append(particle)
+
+                            smoke = Smoke(50)
+                            smoke.position = self.player_sprite.position
+                            self.explosions_list.append(smoke)
+
+                            arcade.play_sound(self.hit_sound)
+                        self.is_invincible = True  # Enable invincibility
+                        print("Lives: " + str(self.lives))
+                        if self.lives <= 0:
+                            game_over_view = GameOverView()
+                            self.window.show_view(game_over_view)
 
         # Stage and score updates
         if self.enemy_trapezoid.check_trapezoid_empty():
