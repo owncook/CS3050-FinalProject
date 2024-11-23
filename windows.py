@@ -410,10 +410,6 @@ class GameView(arcade.View):
         self.home_x = self.player_sprite.center_x
         self.home_y = self.player_sprite.center_y
 
-        self.invincibility_timer = 0  # Timer to track invincibility duration
-        self.is_invincible = False  # Flag to check if player is currently invincible
-        self.invincibility_duration = 1.0  # Duration of invincibility in seconds
-
         # Set background color
         arcade.set_background_color(arcade.color.BLACK)
         # Set up star positions
@@ -443,6 +439,20 @@ class GameView(arcade.View):
         # Enemy trapezoid creation and tracking variables
         self.enemy_trapezoid = Trapezoid()
         self.stage_counter = 1
+
+        # Invincibility
+        self.is_invincible = False
+        self.invincibility_timer = 0  # Timer for invincibility
+        self.flash_interval = 0.10    # Time between flashes
+        self.last_flash_time = time.time()  # Tracks the last flash timestamp
+        self.invincibility_duration = 1.5  # Duration of invincibility in seconds
+
+        # Game over conditions
+        self.is_game_over = False       # Tracks if the game over sequence has started
+        self.game_over_timer = 0.0      # Timer for the game over flashing effect
+        self.game_over_flash_interval = 0.10  # Time between flashes during game over
+
+
 
     def setup(self):
         """Set up the game variables and objects"""
@@ -560,6 +570,24 @@ class GameView(arcade.View):
         """Update game logic"""
         self.player_sprite.update()
 
+         # If the game is over, handle the game over flashing and transition
+        if self.is_game_over:
+            self.game_over_timer += delta_time
+
+            # Flash the player sprite
+            current_time = time.time()
+            if current_time - self.last_flash_time > self.game_over_flash_interval:
+                self.player_sprite.alpha = 255 if self.player_sprite.alpha == 100 else 100
+                self.last_flash_time = current_time
+
+            # Transition to GameOverView after 2 seconds
+            if self.game_over_timer >= 1:
+                self.player_sprite.alpha = 255  # Ensure the player is fully visible
+                game_over_view = GameOverView()
+                self.window.show_view(game_over_view)
+            return  # Prevent further updates while in game over sequence
+
+
         # Update invincibility timer
         if self.is_invincible:
             self.invincibility_timer += delta_time
@@ -611,30 +639,51 @@ class GameView(arcade.View):
                     self.is_invincible = True  # Enable invincibility
                     print("Lives: " + str(self.lives))
                     if self.lives <= 0:
-                        game_over_view = GameOverView()
-                        self.window.show_view(game_over_view)
+                        self.is_game_over = True
+                        self.game_over_timer = 0.0  # Reset the game over timer
 
-            # Collision detection for enemies
-            if not self.is_invincible:
-                for enemy in self.enemy_trapezoid.trapezoid_sprites:
-                    if arcade.check_for_collision(enemy, self.player_sprite):
-                        enemy.remove_from_sprite_lists()
-                        self.lives -= 1
-                        for i in range(PARTICLE_COUNT):
-                            particle = Particle(self.explosions_list)
-                            particle.position = self.player_sprite.position
-                            self.explosions_list.append(particle)
+        # Collision detection for enemies
+        if not self.is_invincible:
+            for enemy in self.enemy_trapezoid.trapezoid_sprites:
+                if arcade.check_for_collision(enemy, self.player_sprite):
+                    enemy.remove_from_sprite_lists()
+                    self.lives -= 1
+                    for i in range(PARTICLE_COUNT):
+                        particle = Particle(self.explosions_list)
+                        particle.position = self.player_sprite.position
+                        self.explosions_list.append(particle)
 
-                            smoke = Smoke(50)
-                            smoke.position = self.player_sprite.position
-                            self.explosions_list.append(smoke)
+                        smoke = Smoke(50)
+                        smoke.position = self.player_sprite.position
+                        self.explosions_list.append(smoke)
 
-                            arcade.play_sound(self.hit_sound)
-                        self.is_invincible = True  # Enable invincibility
-                        print("Lives: " + str(self.lives))
-                        if self.lives <= 0:
-                            game_over_view = GameOverView()
-                            self.window.show_view(game_over_view)
+                        arcade.play_sound(self.hit_sound)
+                    self.is_invincible = True  # Enable invincibility
+                    print("Lives: " + str(self.lives))
+                    if self.lives <= 0:
+                        self.is_game_over = True
+                        self.game_over_timer = 0.0  # Reset the game over timer
+                
+        # Manage player invincibility and flashing effect
+        if self.is_invincible:
+            current_time = time.time()
+
+            # Toggle flashing effect based on flash interval
+            if current_time - self.last_flash_time > self.flash_interval:
+                # Alternate between fully visible and semi-transparent
+                self.player_sprite.alpha = 255 if self.player_sprite.alpha == 50 else 50
+                self.last_flash_time = current_time
+
+            # Increment invincibility timer
+            self.invincibility_timer += delta_time
+            if self.invincibility_timer >= self.invincibility_duration:  # Total duration for flashing
+                self.is_invincible = False
+                self.invincibility_timer = 0
+                self.player_sprite.alpha = 255  # Fully reset visibility
+        else:
+            # Ensure the player remains fully visible when not invincible
+            self.player_sprite.alpha = 255
+
 
         # Stage and score updates
         if self.enemy_trapezoid.check_trapezoid_empty():
