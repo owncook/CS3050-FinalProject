@@ -83,7 +83,7 @@ class Trapezoid():
             left_sprite.start_delay = group_delay
             right_sprite.start_delay = group_delay
 
-            group_delay += 1
+            #group_delay += 1
 
             self.trapezoid_sprites.append(left_sprite)
             self.trapezoid_sprites.append(right_sprite)
@@ -100,8 +100,6 @@ class Trapezoid():
         # Setting the bounds of the trapezoid
         self.left = (constant.SCREEN_WIDTH // 2 - self.largest_gap)
         self.right = (constant.SCREEN_WIDTH // 2 + self.largest_gap)
-
-        print(self.right, self.left)
 
         # Populate each row of the trapezoid
         home_y = constant.SCREEN_HEIGHT - constant.MARGIN_Y

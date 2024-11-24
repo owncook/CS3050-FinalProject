@@ -658,7 +658,6 @@ class GameView(arcade.View):
 
                         arcade.play_sound(self.hit_sound)
                     self.is_invincible = True  # Enable invincibility
-                    print("Lives: " + str(self.lives))
                     if self.lives <= 0:
                         self.is_game_over = True
                         self.game_over_timer = 0.0  # Reset the game over timer
@@ -680,7 +679,6 @@ class GameView(arcade.View):
 
                         arcade.play_sound(self.hit_sound)
                     self.is_invincible = True  # Enable invincibility
-                    print("Lives: " + str(self.lives))
                     if self.lives <= 0:
                         self.is_game_over = True
                         self.game_over_timer = 0.0  # Reset the game over timer
