@@ -7,13 +7,34 @@ from planet import Planet
 from trapezoid import Trapezoid
 from star import Star
 
-arcade.load_font("sources/fonts/emulogic-font/Emulogic-zrEw.ttf")
-arcade.load_font("sources/fonts/lantenia-font/LanteniaRegular-DOVgR.ttf")
+
+import os
+import sys
+
+def resource_path(relative_path):
+    # This handles the resource path for both PyInstaller and when running the script normally
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
+# Now use the updated resource path to load the fonts
+font_path_1 = resource_path('sources/fonts/emulogic-font/Emulogic-zrEw.ttf')
+font_path_2 = resource_path('sources/fonts/lantenia-font/LanteniaRegular-DOVgR.ttf')
+print(font_path_1)  # Check this printed path to verify it's correct
+print(font_path_2)
+
+
+arcade.load_font(font_path_1)
+arcade.load_font(font_path_2)
+
+
 from explosions import Smoke, Particle
+
 default_style = {
         "font_name": "Emulogic",
         "text_color": "arcade.color.RED"
     }
+
+
 
 class StartView(arcade.View):
     """ View that is initially loaded """
@@ -395,8 +416,8 @@ class GameView(arcade.View):
         # Initialize the game window
         super().__init__()
         # -- Animation
-        self.player_image_paths = ['sources/uvmship.png',
-                                   'sources/uvmship_frame2.png']
+        self.player_image_paths = [resource_path('sources/uvmship.png'),
+                                   resource_path('sources/uvmship_frame2.png')]
         self.frames = [arcade.load_texture(img) for img in self.player_image_paths]
         self.current_frame = 0
         self.animation_timer = 0.0  # Timer to track animation speed
@@ -420,7 +441,7 @@ class GameView(arcade.View):
         self.enemy_list = None
         self.bullet_list = None
         self.lives = 3
-        self.heart_texture = arcade.load_texture('sources/heart.png')
+        self.heart_texture = arcade.load_texture(resource_path('sources/heart.png'))
 
         self.score = 0
         self.time_elapsed = 0  # Track time for enemy spawning
@@ -428,7 +449,7 @@ class GameView(arcade.View):
 
         # Sounds
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
-        self.hit_sound = arcade.load_sound("sources/sounds/wilhelm.wav")
+        self.hit_sound = arcade.load_sound(resource_path("sources/sounds/wilhelm.wav"))
         self.explosions_list = None
 
         # Don't show the mouse cursor 

@@ -5,8 +5,27 @@ from constant import *
 import math
 from trapezoid import Trapezoid
 from star import Star
-arcade.load_font("sources/fonts/emulogic-font/Emulogic-zrEw.ttf")
 
+
+import os
+import sys
+
+def resource_path(relative_path):
+    # This handles the resource path for both PyInstaller and when running the script normally
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
+# Now use the updated resource path to load the fonts
+font_path_1 = resource_path('sources/fonts/emulogic-font/Emulogic-zrEw.ttf')
+font_path_2 = resource_path('sources/fonts/lantenia-font/LanteniaRegular-DOVgR.ttf')
+print(font_path_1)  # Check this printed path to verify it's correct
+print(font_path_2)
+
+
+
+
+arcade.load_font(font_path_1)
+arcade.load_font(font_path_2)
 
 class Smoke(arcade.SpriteCircle):
     """ This class represents a puff of smoke that appears behind the exploded sprite. """

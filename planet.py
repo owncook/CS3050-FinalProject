@@ -6,6 +6,16 @@ import arcade
 import constant
 import random
 
+import os 
+import sys
+
+def resource_path(relative_path):
+    # This handles the resource path for both PyInstaller and when running the script normally
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
+
+
 class Planet(arcade.Sprite):  # Make Planet a subclass of arcade.Sprite
     def __init__(self):
         # Call the parent class initializer
@@ -15,7 +25,7 @@ class Planet(arcade.Sprite):  # Make Planet a subclass of arcade.Sprite
         self.planet_type = f"{random.randrange(1,5)}"
 
         # Set the texture for the sprite
-        self.texture = arcade.load_texture(f'sources/planets/planet{self.planet_type}.png')
+        self.texture = arcade.load_texture(resource_path(f'sources/planets/planet{self.planet_type}.png'))
         self.scale = constant.PLANET_SCALE
 
         # Finding the starting x position for planet

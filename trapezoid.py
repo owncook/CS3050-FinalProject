@@ -4,6 +4,14 @@ import constant
 import random
 import math
 from swooping_enemy import Swooping_Enemy
+import os
+import sys
+
+def resource_path(relative_path):
+    # This handles the resource path for both PyInstaller and when running the script normally
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
 
 
 class Trapezoid():
@@ -19,6 +27,7 @@ class Trapezoid():
         self.selected_enemy  = None
         self.selected_enemy_2 = None
         self.selected_enemy_3 = None
+        
 
         self.enemy_bullet_list = arcade.SpriteList()
 
@@ -42,16 +51,16 @@ class Trapezoid():
     def populate_row(self, num_enemies, enemy_type, home_y):
         if enemy_type == "bee":
             image_paths = [
-                'sources/enemies/bee.png',
-                'sources/enemies/bee_frame2.png'
+                resource_path('sources/enemies/bee.png'),
+                resource_path('sources/enemies/bee_frame2.png')
             ]
         elif enemy_type == "butterfly":
-            image_paths = [
-                'sources/enemies/butterfly.png',
-                'sources/enemies/butterfly_frame2.png'
+            image_paths = [resource_path
+                ('sources/enemies/butterfly.png'),
+                resource_path('sources/enemies/butterfly_frame2.png')
             ]
         else:
-            image_paths = ['sources/enemies/' + enemy_type + '.png']
+            image_paths = [resource_path('sources/enemies/' + enemy_type + '.png')]
         
         group_delay = 0
 
