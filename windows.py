@@ -288,7 +288,7 @@ class LeaderboardView(arcade.View):
         arcade.draw_text("-BEST 5-", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.25, arcade.color.RED,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text("RANK  SCORE  STAGE  INI", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.37,
+        arcade.draw_text("RANK  INI  STAGE  SCORE", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.37,
                          arcade.color.WHITE,
                          20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
