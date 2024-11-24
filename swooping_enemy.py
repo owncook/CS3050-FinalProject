@@ -4,6 +4,14 @@ import constant
 from constant import *
 import time
 import random
+import os 
+import sys
+
+def resource_path(relative_path):
+    # This handles the resource path for both PyInstaller and when running the script normally
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
 
 class Swooping_Enemy(arcade.Sprite):
     """Enemy class that swoops towards the player dynamically, updating its attack target as the player moves."""
