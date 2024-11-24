@@ -92,8 +92,6 @@ class Trapezoid():
         self.left = (constant.SCREEN_WIDTH // 2 - self.largest_gap)
         self.right = (constant.SCREEN_WIDTH // 2 + self.largest_gap)
 
-        print(self.right, self.left)
-
         # Populate each row of the trapezoid
         home_y = constant.SCREEN_HEIGHT - constant.MARGIN_Y
         self.populate_row(num_boss, 'evilthing', home_y)
