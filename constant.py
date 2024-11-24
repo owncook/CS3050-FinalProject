@@ -54,7 +54,7 @@ PLANET_SCALE = 2
 NUM_HIGHSCORES = 5
 
 # --- Explosions ---
-# How fast the particle will accelerate down. Make 0 if not desired
+# How fast the particle will accelerate down. 
 PARTICLE_GRAVITY = 0.05
 
 # How fast to fade the particle
@@ -81,10 +81,6 @@ PARTICLE_COLORS = [arcade.color.ALIZARIN_CRIMSON,
 PARTICLE_SPARKLE_CHANCE = 0.02
 
 # --- Smoke
-# Note: Adding smoke trails makes for a lot of sprites and can slow things
-# down. If you want a lot, it will be necessary to move processing to GPU
-# using transform feedback. If to slow, just get rid of smoke.
-
 # Start scale of smoke, and how fast is scales up
 SMOKE_START_SCALE = 0.25
 SMOKE_EXPANSION_RATE = 0.03
