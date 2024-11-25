@@ -1,5 +1,6 @@
 # CS3050 Group 3 Final Project: Galaga
 
+
 ### Introduction
 
 This is group 3's CS3050 Software Engineering final project. With the use of python arcade we set out to make our version of the classic arcade game Galaga.
@@ -21,25 +22,29 @@ The [PythonArcade's](https://api.arcade.academy/en/latest/examples/platform_tuto
 pip install arcade
 ```
 
-## Optional Desktop Application Install
-After cloning the repository to your device, run:
+## Building Desktop App (macOS)
+First clone the repository to your device. Next, navigate to the repository directory and run:
 ```
-    pyinstaller main.py \
+    pyinstaller --onefile --windowed \
+    --name "Galaga" \
+    --icon=sources/app_icon/galaga.icns \
     --add-data "keys:keys" \
     --add-data "sources:sources" \
-    --collect-data arcade
+    main.py
 ```
-in the repo directory. Navigate into the newly built dist folder, then open the main folder. 
+Navigate into the newly built dist folder, then open the main folder. 
 Inside are an _include folder and a main.exec. In order to run the exec from your desktop, transfer both the _include folder and the exec to your desktop. 
 To launch, double click the exec!
 
 ## Getting Started
 
-#### Running
+### Running
 
-If installed via the executeable run that or if cloned run the [main.py](main.py) script.
+Download the zip archive of the app and start playing!
 
-#### Controls
+Alternativley, run the [main.py](main.py) script from the repo directory.
+
+### Controls
 
 - Move left/right: left arrow button/right arrow button
 - Fire bullet: Spacebar (you only get two at a time)
