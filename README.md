@@ -23,6 +23,8 @@ pip install arcade
 ```
 
 ## Building Desktop App (macOS)
+> **Note:** The leaderboard function __**will not work**__ if you do not have a firebase key. To request one, email one of the creators.
+
 First clone the repository to your device. Next, navigate to the repository directory and run:
 ```
     pyinstaller --onefile --windowed \
