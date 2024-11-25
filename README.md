@@ -23,10 +23,12 @@ pip install arcade
 
 ## Optional Desktop Application Install
 After cloning the repository to your device, run:
+    ```
     pyinstaller main.py \
     --add-data "keys:keys" \
     --add-data "sources:sources" \
     --collect-data arcade
+    ```
 in the repo directory. Navigate into the newly built dist folder, then open the main folder. 
 Inside are a _include folder and a main.exec. In order to run the exec from your desktop, transfer both the _include folder and the exec to your desktop. 
 To launch, double click the exec!
