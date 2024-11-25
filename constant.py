@@ -32,6 +32,7 @@ MARGIN_Y = 100
 ENEMY_OFFSCREEN_MARGIN = 30
 ENEMY_SPEED = 5
 ENEMY_BULLET_SPEED = 8
+SWOOPING_ENEMY_SPEED = 1
 
 # Constants for Bézier curve calculations
 MAX_SWOOP_DURATION = 3  # Maximum time for swoop progression

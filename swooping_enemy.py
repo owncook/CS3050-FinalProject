@@ -124,16 +124,17 @@ class Swooping_Enemy(arcade.Sprite):
             if t >= 1 or self.center_y < 0:
                 # Reset after swoop
                 self.is_attacking = False
-                self.center_x = self.home_x
-                self.center_y = self.home_y
+                self.start_x = self.home_x
+                self.start_y = SCREEN_HEIGHT + 100
                 self.swoop_timer = 0
+                self.is_spawning = True
 
         elif self.is_spawning:
             if self.swoop_timer >= self.start_delay:
                 # Calculate spawn movement
                 control_x = (self.start_x + self.home_x) / 2
                 control_y = max(self.start_y, self.home_y) + 150
-                t = min(self.swoop_timer / 3, 1)
+                t = min(self.swoop_timer / 5, 1)
                 self.center_x = (1 - t)**BEZIER_POWER * self.start_x + 2 * (1 - t) * t * control_x + t**BEZIER_POWER * self.home_x
                 self.center_y = (1 - t)**BEZIER_POWER * self.start_y + 2 * (1 - t) * t * control_y + t**BEZIER_POWER * self.home_y
                 self.swoop_timer += delta_time
