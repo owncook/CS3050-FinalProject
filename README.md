@@ -22,8 +22,8 @@ pip install arcade
 ```
 
 ## Optional Desktop Application Install
-After cloning the repository to your device, run 
-pyinstaller main.py \
+After cloning the repository to your device, run:
+    pyinstaller main.py \
     --add-data "keys:keys" \
     --add-data "sources:sources" \
     --collect-data arcade
