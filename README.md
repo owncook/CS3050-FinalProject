@@ -15,11 +15,21 @@ This is group 3's CS3050 Software Engineering final project. With the use of pyt
 
 Clone the repository to your device and navigate to it via ide or terminal.
 
-The [PythonArcade's](https://api.arcade.academy/en/latest/examples/platform_tutorial/step_01.html) install tutorial reccomended using a virtual environment to discourage package version conflicts. During our work we used/test venv and conda environments, pcik your preference and activate it. To install the python arcade module navigate to terminal and run this command:
+The [PythonArcade's](https://api.arcade.academy/en/latest/examples/platform_tutorial/step_01.html) install tutorial reccomended using a virtual environment to discourage package version conflicts. During our work we used/test venv and conda environments, pick your preference and activate it. To install the python arcade module navigate to terminal and run this command:
 
 ```
 pip install arcade
 ```
+
+## Optional Desktop Application Install
+After cloning the repository to your device, run 
+pyinstaller main.py \
+    --add-data "keys:keys" \
+    --add-data "sources:sources" \
+    --collect-data arcade
+in the repo directory. Navigate into the newly built dist folder, then open the main folder. 
+Inside are a _include folder and a main.exec. In order to run the exec from your desktop, transfer both the _include folder and the exec to your desktop. 
+To launch, double click the exec!
 
 ## Getting Started
 
