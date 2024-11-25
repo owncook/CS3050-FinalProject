@@ -60,11 +60,10 @@ class StartView(arcade.View):
             arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", align_y=-150, child=start_button))
         start_button.on_click = self.start_button_click
 
-# TODO: update high score using query(cannot do until I am out of the airport)
     def on_draw(self):
         """ Draw this view """
         self.clear()
-        # top_five = query_database()
+        top_five = query_database()
         # Draw stars
         for star in self.star_list:
             x, y = star
@@ -91,7 +90,7 @@ class StartView(arcade.View):
         self.ui_manager_start.draw()
         arcade.draw_text("HIGH SCORE", constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.05, arcade.color.RED, 20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
-        arcade.draw_text('1000', constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.1,
+        arcade.draw_text(str(top_five[0][2]), constant.SCREEN_WIDTH // 2, constant.SCREEN_HEIGHT // 1.1,
                          arcade.color.WHITE, 20,
                          anchor_x="center", anchor_y="center", font_name="Emulogic")
         arcade.draw_text("3GDOWN", constant.SCREEN_WIDTH // 2 - 245, constant.SCREEN_HEIGHT // 1.05,
