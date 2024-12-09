@@ -38,6 +38,10 @@ default_style = {
 
 class StartView(arcade.View):
     """ View that is initially loaded """
+    def __init__(self):
+        super().__init__()
+        self.queried = False
+        self.top_five = None
 
     def on_show_view(self):
         """ This is run once when we switch to this view """
@@ -62,6 +66,11 @@ class StartView(arcade.View):
 
     def on_draw(self):
         """ Draw this view """
+
+        if not self.queried:
+            self.top_five = query_database()
+            self.queried = True
+
         self.clear()
         # Draw stars
         for star in self.star_list:
@@ -255,6 +264,7 @@ class LeaderboardView(arcade.View):
     def __init__(self, game_view):
         super().__init__()
         # Create UI manager and star list
+        self.queried = False
         self.top_five = None
         self.star_list = []
         self.ui_manager_leaderboard = arcade.gui.UIManager()
@@ -286,11 +296,11 @@ class LeaderboardView(arcade.View):
 
     def on_draw(self):
         self.clear()
-        # information from the firebase database
-        queried = False
 
-        if not queried:
+        # Querying once
+        if not self.queried:
             self.top_five = query_database()
+            self.queried = True
 
         for star in self.star_list:
             x, y = star
@@ -406,6 +416,7 @@ class LeaderboardView(arcade.View):
     # The user restart when restart button is clicked
     def restart_button_click(self, event):
         """ If the user presses the mouse button, re-start the game. """
+        self.queried = False
         self.ui_manager_leaderboard.disable()
         game_view = GameView()
         game_view.setup()
