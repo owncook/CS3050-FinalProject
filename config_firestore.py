@@ -23,8 +23,16 @@ firebase_admin.initialize_app(cred)  # Ensure Firebase is initialized
 # Now we can use Firestore
 db = firestore.client()
 
+# Initializing database if empty
 
-for _ in range(5):
-    doc_ref = db.collection('scores').document('Player' + str(time.time()))
-    doc_ref.set({'username': 'JDH', 'stage': 2, 'score': 50})
+db_empty = False
+
+scores_collection = db.collection('scores')
+
+scores_docs = list(scores_collection.stream())
+
+if len(scores_docs < 5):
+    for _ in range(5):
+        doc_ref = db.collection('scores').document('Player' + str(time.time()))
+        doc_ref.set({'username': 'JDH', 'stage': 2, 'score': 50})
 
