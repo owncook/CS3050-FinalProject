@@ -9,7 +9,7 @@ SCREEN_TITLE = "Galaga Game Window"
 
 # --- Player ---
 PLAYER_SCALE = 2
-BULLET_SPEED = 5
+BULLET_SPEED = 7
 MAX_BULLETS = 2
 
 # --- Trapezoid ---

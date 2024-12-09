@@ -62,8 +62,11 @@ class StartView(arcade.View):
 
     def on_draw(self):
         """ Draw this view """
+        counter = 0
         self.clear()
-        top_five = query_database()
+        if counter == 0:
+            top_five = query_database()
+        counter += 1
         # Draw stars
         for star in self.star_list:
             x, y = star

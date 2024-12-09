@@ -3,6 +3,7 @@ import sys
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+import time
 
 # Check if the script is running as a bundled app
 if getattr(sys, 'frozen', False):
@@ -13,7 +14,7 @@ else:
     app_path = os.path.dirname(__file__)
 
 # Define the path to the credentials file
-cred_path = os.path.join(app_path, 'keys/cs-3050-final-project-538f66db8997.json')
+cred_path = os.path.join(app_path, 'keys/cs-fair-panic-firebase-adminsdk-ua0sv-2afc4b9471.json')
 
 # Initialize Firebase using the credentials file
 cred = credentials.Certificate(cred_path)
@@ -21,3 +22,9 @@ firebase_admin.initialize_app(cred)  # Ensure Firebase is initialized
 
 # Now we can use Firestore
 db = firestore.client()
+
+
+for _ in range(5):
+    doc_ref = db.collection('scores').document('Player' + str(time.time()))
+    doc_ref.set({'username': 'JDH', 'stage': 2, 'score': 50})
+
